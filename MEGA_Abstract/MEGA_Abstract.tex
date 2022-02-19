@@ -1,4 +1,4 @@
-%Real Roots  JSAG version
+% MEGA extended abstract
 %
 %
 %
@@ -28,7 +28,7 @@
 \newtheorem{remark}[theorem]{Remark}
 
 
-\title{Galois Groups of Finite Fano Problems}
+\title{Computing Galois Groups of Finite Fano Problems}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \author[T.~Yahl]{Thomas Yahl} 
 \address{T.~Yahl\\ 
@@ -54,30 +54,156 @@
 %%%%%%%%%%%%%
 \begin{document}
 
+%%%%%%%%%%%%
+%%Sections%%
+%%%%%%%%%%%%
+%
+%1) Introduction
+%   i) Jordan historical context
+%   ii) Harris' result
+%   iii) Hashimoto and Kadets paper
+%
+%2) Galois Groups of Branched Covers 
+%
+%3) Numerical Algebraic Geometry
+%   i) Homotopy continuation
+%   ii) Numerical certification
+%
+%4) Finite Fano Problems
+%   i) Debarre and Manivel results
+%   ii) Hashimoto and Kadets results
+%
+%5) Computational Methods
+%   i) Monodromy loops
+%   ii) Harris' method
+%
+%6) Results
+%
+
+
 
 %%%%%%%%%%%%
 %%Abstract%%
 %%%%%%%%%%%%
 \begin{abstract}
-Fano problems
+The problem of enumerating linear spaces of a fixed dimension on a variety is known as a Fano problem. Those Fano problems with finitely many solutions have an associated Galois group that acts on the set of solutions. For a large class of these Fano problems, Hashimoto and Kadets determined the Galois group completely and showed that in all other cases the Galois group contains the alternating group on the solution set. For reasonably large Fano problems with undetermined Galois group, computational methods can be used to certify that the Galois group is the full symmetric group. For larger examples we give evidence the Galois group is the full symmetric group.
 \end{abstract}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \maketitle
 
-
 %%%%%%%%%%%%%%%%
 %%Introduction%%
 %%%%%%%%%%%%%%%%
 \section{Introduction}
+%Historical context of Fano problems
+%   Debarre and Manivel
+%
+The problem of enumerating linear spaces of a fixed dimension lying on a variety is known as a Fano problem. When the variety is defined by a complete intersection, the solution space was studied by Debarre and Manivel \cite{DM} in which they determined invariants such as dimension and degree. We concern ourselves with only those Fano problems with a finite number of solutions, which we simply call a Fano problem. A classical example of a Fano problem is the problem of 27 lines on a smooth cubic surface.
+
+%Galois groups of fano problems (Jordan/Harris/Hashimoto & Kadets)
+%   Jordan & Harris
+%   Hashimoto & Kadets
+%
+To each Fano problem there is an associated Galois group. Jordan was the first to study these Galois groups in his work  ``Trait\'{e} des Substitutions et des \'{E}quations Alg\'{e}briques" in which he noted the Galois group of an enumerative problem must preserve any intrinsic structures of the problem \cite{Jordan}. Those problems for which the intrinsic structure of the problem restricts the Galois group from being the full symmetric group, we call \defcolor{enriched}. If there are no obstructions and the Galois group is the full symmetric group, we call is \defcolor{fully symmetric}. For the problem of 27 lines on a cubic surface, the incidences of the lines form a remarkable configuration which the Galois group must preserve. Jordan used this to show the Galois group of the problem of 27 lines is enriched and a subgroup of $E_6$. 
+
+Harris continued to progress the study of Galois groups of Fano problems by proving Jordan's inequality to be equality and by showing that for a family of Fano problems generalizing the problem of 27 lines on a cubic surface, the Galois groups were all the full symmetric group \cite{Harris}. Harris work utilized that the algebraic Galois groups Jordan defined are geometric monodromy groups, an idea tracing back to Hermite \cite{Hermite}. By first showing these Galois groups are highly transitive, Harris used a clever technique to show that these Galois groups must contain a simple permutation and therefore be the full symmetric group. 
+
+Much of the study of Galois groups of Fano problems then laid dormant until Hoshimoto and Kadets nearly classified the Galois groups in all cases \cite{HK}. Hoshimoto and Kadets determined a class of Fano problems to be enriched and determined their Galois groups completely by a detailed study of the problems. They then determined that all other Galois groups must contain the alternating group on their solutions. This portion of their work also utilized showing that these Galois groups are highly transitive.
+
+%This paper does computations
+%   Methods
+%   Results
+%
+Since Hoshimoto and Kadets, the problem of determining the Galois groups of Fano problems has been reduced to determining, for certain Fano problems, whether the Galois group is the alternating group or is fully symmetric. One way of making this distinction is to produce or show the existence of a simple transposition in the Galois group. For Fano problems of relatively large size, this can be done computationally via methods of numerical homotopy continuation and numerical certification respectively.
+
+Methods of numerical homotopy continuation can be used to simuluate path liftings, which can be used to produce permutations in the Galois group with a high degree of certainty. In doing so, we show for those Fano problems with $<100,000$ solutions whose Galois group has yet to be determined, the Galois group is fully symmetric with high certainty.
+
+Smale's alpha theory allows one to numerically certify a unique solution to a system of equations in a bounding ball \cite{Smale}. Applying this computational idea to the technique used by Harris, we demonstrably prove that for those Fano problems with $<50,000$ solutions whose Galois group has yet to be determined, the Galois group is in fact fully symmetric. 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Galois Groups of Branched Covers%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Galois Groups of Branched Covers}
+%Brached cover definition
+%   varieties X,Y
+%   branched cover \pi:X\mapsto Y
+%   degree d
+%   
+We say a map is dominant if the closure of its image is its target. A \defcolor{branched cover} is a dominant map $\pi:X\mapsto Y$ of irreducible (complex) varieties of the same dimension. There is a maximal nonempty Zariski open set $U\subseteq Y$ (dense, open, and path-connected) such that for $y\in U$, the fiber $\pi^{-1}(y)$ has a fixed cardinality $d$ called the \defcolor{degree of $\pi$}.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{}
+
+%Galois groups definition
+%   Galois group of pi $\mathcal{G}_\pi$
+%
+The restriction $\pi:\pi^{-1}(U)\mapsto U$ is a covering space of degree $d$. Given a base point $y\in U$, each loop in $U$ based at $y$ lifts to $d$ paths in $\pi^{-1}(U)$ connecting points of the fiber $\pi^{-1}(y)$ resulting in a permutation of $\pi^{-1}(y)$. The set of all permutations obtained in this way is a group called the \defcolor{Galois group of $\pi$} or the \defcolor{monodromy group of $\pi$} and is denoted $\mathcal{G}_\pi$. Since $X$ is irreducible, $\pi^{-1}(U)$ is path-connected and so $\mathcal{G}_\pi$ acts transitively. 
+
+
+
+%Galois = monodromy
+%
+Historically, this Galois group was defined algebraically. The branched cover $\pi:X\mapsto Y$ induces an injection of function fields $\mathbb{C}(Y)\hookrightarrow\mathbb{C}(X)$ from which one considers $\mathbb{C}(X)$ as an algebraic extension of $\mathbb{C}(Y)$ of degree $d$. The Galois group of $\pi$ is then defined as the Galois group of the extension $\overline{\mathbb{C}(X)}^{\text{Gal}}/\mathbb{C}(Y)$, where $\overline{\mathbb{C}(X)}^{\text{Gal}}$ denotes the Galois closure of $\mathbb{C}(X)$ over $\mathbb{C}(Y)$. The equivalence of these definitions was shown by Harris \cite{Harris}, though the result traces back to Hermite. 
+
+
+
+%Numerical computation of Galois groups
+%
+Methods of numerical algebraic geometry can be used to effectively compute Galois groups of branched covers. Given a branched cover $\pi:X\mapsto Y$ and equations determining the varieties $X$ and $Y$, the paradigm of numerical homotopy continuation allows one to numerical lift paths from $Y$ to $X$. Lifting based loops in $Y$ then yields desired permutations belonging to the Galois group. A technique of Harris showing the existence of a simple transposition in the Galois group relies on showing that a fiber $\pi^{-1}(y)$ contains a single point of multiplicity 2. Smale's alpha theory permits methods of numerical certification to verify or soft-verify the existence of such a fiber.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Numerical Algebraic Geometry%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Numerical Algebraic Geometry}
+%Numerical homotopy continuation
+%   Citations?
+%
+
+
+
+
+%Numerical certification
+%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%Finite Fano Problems%%
+%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Finite Fano Problems}
+%Definitions
+%
+
+%Dimension & degree
+%
+
+%Galois groups of Fano problems
+%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Computational Methods%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Computational Methods}
+%Monodromy loops
+%
+
+%Harris' method
+%
+
+
+
+%%%%%%%%%%%
+%%Results%%
+%%%%%%%%%%%
+\section{Results}
+
 
 
 \bibliographystyle{abbrv}
@@ -85,3 +211,18 @@ Fano problems
 \bibliography{MEGA_Abstract}
 
 \end{document}
+
+
+Pulling back functions along a branched cover $\pi:X\mapsto Y$ induces an injection of function fields $\pi^\ast:\mathbb{C}(Y)\hookrightarrow\mathbb{C}(X)$ from which we consider $\mathbb{C}(X)$ as an extension of $\mathbb{C}(Y)$. Because $X$ and $Y$ have the same dimension, this extension of fields is algebraic of degree $d = [\mathbb{C}(X):\mathbb{C}(Y)]$ and we say the \defcolor{degree of $\pi$} is $d$. 
+
+A branched cover $\pi:X\mapsto Y$ has the property that there exists an open set $U\subseteq Y$ such that the restriction $\pi:\pi^{-1}(U)\mapsto U$ is a covering space of degree $d$. Given an element $\alpha\in\mathbb{C}(X)$ such that $\mathbb{C}(X) = \mathbb{C}(Y)(\alpha)$, $\alpha$ satisfies an irreducible polynomial $f\in\mathbb{C}(Y)[t]$ of degree $d$. 
+
+
+
+
+
+This extension may not necessarily be a Galois extension. To see this, write $\mathbb{C}(X) = \mathbb{C}(Y)(\alpha)$ for some $\alpha\in\mathbb{C}(X)$ of degree $d$. If $f\in\mathbb{C}(Y)[t]$ is a polynomial of degree $d$ that $\alpha$ satisfies then the Galois closure of $\mathbb{C}(X)$, denoted $\overline{\mathbb{C}(X)}^{\text{Gal}}$, is the field obtained by adjoining all roots of $f$ to $\mathbb{C}(Y)$. 
+
+We define the Galois group of $\pi$, $\mathcal{G}_\pi$, to be the Galois group of the extension $\overline{\mathbb{C}(X)}^{\text{Gal}}/\mathbb{C}(Y)$. The Galois group naturally embeds into the symmetric group $S_d$ as it acts on the set of $d$ roots of $f$. Since the polynomial $f$ is of minimal degree, it is irreducible and $\mathcal{G}_\pi$ acts transitive. 
+
+A result tracing back to Hermite is that this algebraically defined Galois group can be defined from only the geometry of the brached cover itself.
