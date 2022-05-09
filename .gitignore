@@ -1,0 +1,6 @@
+# file extensions to ignore
+*~
+*.aux
+*.log
+*.bbl
+*.blg

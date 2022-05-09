@@ -49,18 +49,15 @@ export{
     "printCycleTally",
     "printForGAP",
     
-    -------------------------
-    --Certification methods--
-    -------------------------
-    "AlphaCertified",
-    
     -----------
     --options--
     -----------
     "BaseElements",
     "BaseRing",
     "NumPaths",
-    "RefineSolns"
+    "RefineSolns",
+    "RefineStartSolns",
+    "RefineEndSolns"
     }
 
 
@@ -90,6 +87,7 @@ monodromy (PolySystem,Point,List) := Monodromy => o->(F,basePt,baseSolns)->(
     monod    
     )
 
+--?
 monodromy (List,List,List) := Monodromy => o->(F,basePt,baseSolns)->(
     monodromy(polySystem F, point {basePt}, apply(baseSolns,p-> point {p}))
     )
@@ -142,7 +140,7 @@ isWellDefined (Monodromy) := Boolean => M->(
 ----on the intersection of polynomials of degrees d = (d_1,..,d_s).
 FanoMonodromy = method(Options=>{Verbose=>false})
 FanoMonodromy (ZZ,ZZ,Sequence) := Monodromy => o->(r,n,degs)->(
-    if not ((n-r)*(r+1) === sum(degs,d->binomial(d+r,r))) then error "--FanoMonodromy: Expected family of finite Fano problems.";
+    if not ((n-r)*(r+1) === sum(degs,d->binomial(d+r,r))) then error "--FanoMonodromy: Expected family of non-empty finite Fano problems.";
     
     eqns := FanoEquations(r,n,degs);
     numSolns := FanoNumSolns(r,n,degs);
@@ -151,7 +149,7 @@ FanoMonodromy (ZZ,ZZ,Sequence) := Monodromy => o->(r,n,degs)->(
     (basePt,baseSolns) := solveFamily(eqns,TargetSolutionCount=>numSolns,Verbose=>o.Verbose,NumberOfNodes=>3);
     baseSolns = points baseSolns;
     if (#baseSolns =!= numSolns) then (
-	print("--FanoMonodromy: Not all solutions found");
+	print("--FanoMonodromy: Not all solutions found, please try again");
 	return(0)
 	);
     
@@ -162,7 +160,7 @@ FanoMonodromy (ZZ,ZZ,Sequence) := Monodromy => o->(r,n,degs)->(
 --Generates the equations of a Fano problem
 FanoEquations = method(Options=>{BaseRing=>CC})
 FanoEquations (ZZ,ZZ,Sequence) := PolySystem => o->(r,n,degs)->(
-    if not ((n-r)*(r+1) === sum(degs,d->binomial(d+r,r))) then error "--FanoMonodromy: Expected family of finite Fano problems.";
+    if not ((n-r)*(r+1) === sum(degs,d->binomial(d+r,r))) then error "--FanoMonodromy: Expected family of non-empty finite Fano problems.";
     
     s := #degs;
     
@@ -185,7 +183,7 @@ FanoEquations (ZZ,ZZ,Sequence) := PolySystem => o->(r,n,degs)->(
     T := R[t_1..t_r];
     
     --Hyperplane equations
-    F := apply(s,i->basis(0,degs#i,module S)*(transpose matrix {toList(w_(i,1)..w_(i,binomial(degs#i+n,n)))}));
+    F := apply(s,i->basis(0,degs#i,S)*(transpose matrix {toList(w_(i,1)..w_(i,binomial(degs#i+n,n)))}));
     
     --Parameterization of linear space determined by the x_(i,j)
     L := apply(n-r,j->sum(toList(x_(j+1,1)..x_(j+1,r)),toList(t_1..t_r),(z,v)->z*v)+x_(j+1,r+1))|toList(t_1..t_r);
@@ -267,6 +265,7 @@ rewriteEqns (PolySystem) := PolySystem => o->F->(
 
 --Determines if a set of Points corresponds to a permutation of the solutions
 ----over the base of a given Monodromy object.
+----can change max to 2-norm or other norm. (max scales well with dimension)
 permutation = method(Options=>{Tolerance=>1e-6})
 permutation (Monodromy,List) := List => o->(M,S)->(
     numSolns := #(M#baseSolutions);
@@ -318,60 +317,13 @@ refine (Monodromy) := Monodromy => o->M->(
     )
 
 
---Method for creating input files for AlphaCertified
-----meant for systems with coefficients in Gaussian rationals
-----meant for solutions over CC (rouds them to Gaussian rationals)
-writeAlphaCertifiedFile = method()
-writeAlphaCertifiedFile (PolySystem) := String => F->(
-    temp := temporaryFileName();
-    file := openOutAppend(temp);
-    C := coefficientRing ring F;
-    n := F#NumberOfPolys;
-    file << toString(n)|" "|toString(n) << endl << endl;
-    
-    eqns := equations F;
-    for f in eqns do (
-	exps := exponents f;
-	coeffs := apply(flatten entries sub(last coefficients f,C),c-> flatten entries last coefficients(c,Monomials=>flatten entries basis C));
-	numTerms := #exps;
-	
-	file << toString(numTerms) << endl;
-	for i from 0 to numTerms - 1 do (
-	    file << fold((a,b)->a|toString(b)|" ","",exps#i|coeffs#i) << endl
-	    )
-	);
-    file << close;
-    
-    temp
-    )
-
-writeAlphaCertifiedFile (List) := Nothing => solns->(
-    temp := temporaryFileName();
-    file := openOutAppend(temp);
-    coords := apply(solns,s->apply(coordinates s,z->{lift(realPart z,QQ),lift(imaginaryPart z,QQ)}));
-    numSolns := #coords;
-    n := #(first coords);
-    
-    file << toString(numSolns) << endl;
-    for s in coords do (
-	file << endl;
-	for z in s do (
-	    file << fold((a,b)->a|toString(b)|" ","",z) << endl
-	    )
-	);
-    file << close;
-    
-    temp
-    )
-
-
 -------------------------------------------
 ------------ Monodromy Methods ------------
 -------------------------------------------
 
 --Tracks solutions from base point to given points and back to base point.
 ----The resulting permutation of solutions is recorded.
-monodromyLoop = method(Options=>{RefineSolns=>false,Tolerance=>1e-6,Verbosity=>0,stepIncreaseFactor=>2,tStep=>.01,maxCorrSteps=>2,CorrectorTolerance=>1e-6,tStepMin=>1e-10})
+monodromyLoop = method(Options=>{RefineSolns=>false,Tolerance=>1e-4,Verbosity=>0,stepIncreaseFactor=>2,tStep=>1e-6,maxCorrSteps=>3,CorrectorTolerance=>1e-8,tStepMin=>1e-30})
 monodromyLoop (Monodromy,List) := Monodromy => o-> (M,pts)->(
     F := M#family;
     R := ring F;
@@ -403,7 +355,7 @@ monodromyLoop (Monodromy,List) := Monodromy => o-> (M,pts)->(
     
     --Refine solutions 
     if (o.RefineSolns) then (
-	trackedSolns = refine(specSystems#0,trackedSolns,Iterations=>10)
+	trackedSolns = refine(specSystems#0,trackedSolns,Bits=>30)
 	);
     
     --Checking that tracked solutions correspond to permutation of base solutions
@@ -448,7 +400,7 @@ monodromyLoop (Monodromy,ZZ) := Monodromy => o->(M,n)->(
 --Tracks solutions from the base point to a new chosen point. A new
 ----Monodromy object is returned with the chosen base point.
 ----NumPaths tracks along multiple paths and accumulates solutions
-changeBasePoint = method(Options=>{Tolerance=>1e-6,NumPaths=>10,stepIncreaseFactor=>3,tStep=>.001,maxCorrSteps=>3,CorrectorTolerance=>1e-6})
+changeBasePoint = method(Options=>{RefineStartSolns=>false,RefineEndSolns=>false,Tolerance=>1e-4,NumPaths=>10,stepIncreaseFactor=>1.2,tStep=>1e-4,maxCorrSteps=>40,CorrectorTolerance=>1e-8,Verbose=>false})
 changeBasePoint (Monodromy,Point) := Monodromy => o->(M,bp)->(
     F := M#family;
     basePt := M#basePoint;
@@ -467,19 +419,56 @@ changeBasePoint (Monodromy,Point) := Monodromy => o->(M,bp)->(
 	CorrectorTolerance=>o.CorrectorTolerance
 	};
     
+    --Refine solutions 
+    if (o.RefineStartSolns) then (
+	baseSolns = refine(specSystems#0,baseSolns)
+	);
+    
     --Tracking solutions
+    if o.Verbose then print("Tracking 1st time");
     trackedSolns := track(specSystems#0,specSystems#1,baseSolns,trackingOpts);
-    newBaseSolns := select(trackedSolns,p->status p == Regular);
+    trackedSolns = select(trackedSolns,p->status p == Regular);
+
+    --Refine solutions 
+    if (o.RefineEndSolns) then (
+	trackedSolns = refine(specSystems#1,trackedSolns,Bits=>30)
+	);
+
+    newBaseSolns := {};
+    for soln in trackedSolns do (
+	if all(newBaseSolns,oldSoln->norm(2,coordinates oldSoln - coordinates soln) > o.Tolerance) then (
+	    if o.Verbose then print("solution #"|toString(#newBaseSolns)|" found");
+	    if o.Verbose then print(toString(coordinates soln));
+	    if o.Verbose then print("");
+	    newBaseSolns = newBaseSolns|{soln}
+	    )
+	);
+    if o.Verbose then print("Counted "|toString(#newBaseSolns)|" solutions out of "|toString(#M#baseSolutions));
     COUNT := 1;
-    while (#newBaseSolns != #baseSolns) and (COUNT < o.NumPaths) do (
+    while (#newBaseSolns < #baseSolns) and (COUNT < o.NumPaths-1) do (
+	if o.Verbose then print("Tracking "|toString(COUNT+1)|"-th time");
 	trackedSolns = track(specSystems#0,specSystems#1,baseSolns,trackingOpts++{gamma=>random(CC)});
 	trackedSolns = select(trackedSolns,p->status p == Regular);
-	additionalSolns := select(trackedSolns,p->not any(newBaseSolns,q->norm(2,coordinates p - coordinates q) < o.Tolerance));
-	newBaseSolns = newBaseSolns|additionalSolns;
+	
+	--Refine solutions 
+    	if (o.RefineEndSolns) then (
+	    trackedSolns = refine(specSystems#1,trackedSolns)
+	    );
+	
+	for soln in trackedSolns do (
+	    if all(newBaseSolns,oldSoln->norm(2,coordinates oldSoln - coordinates soln) > o.Tolerance) then (
+		newBaseSolns = newBaseSolns|{soln};
+		if o.Verbose then print("solution #"|toString(#newBaseSolns)|" found");
+	    	if o.Verbose then print(toString(coordinates soln));
+	    	if o.Verbose then print("")
+		)
+	    );
+	if o.Verbose then print("Counted "|toString(#newBaseSolns)|" solutions out of "|toString(#M#baseSolutions));
 	COUNT = COUNT + 1
 	);
     
     if (#newBaseSolns === #baseSolns) then (
+	if o.Verbose then print("All solutions to new base system were found");
 	monodromy(F,bp,newBaseSolns,BaseElements=>grp)
 	) else (
 	error "--changeBasePoint: Couldn't find all solutions over new base."
@@ -534,43 +523,6 @@ printForGAP (Monodromy) := String => M->(
 	"Group()"
 	)
     )
-
-
------------------------------------------------
------------- Certification Methods ------------
------------------------------------------------
-
---Outputs the results of AlphaCertified with input from F and solns.
-----Intended use only for systems F with Gaussian rational coefficients.
-AlphaCertified = method()
-AlphaCertified (PolySystem, List) := List => (F,solns)->(
-    f1 := writeAlphaCertifiedFile(F);
-    f2 := writeAlphaCertifiedFile(solns);
-    run("../Software/alphaCertified "|f1|" "|f2|" ../Software/settings > ACOUTPUT");
-    s := lines get "distinctSolns";
-    run("rm ACOUTPUT");
-    run("rm approxSolns");
-    run("rm constantValues");
-    run("rm distinctSolns");
-    run("rm isApproxSoln");
-    run("rm isDistinctSoln");
-    run("rm redundantSolns");
-    run("rm refinedPoints");
-    run("rm summary");
-    run("rm unknownPoints");
-    
-    if (#s == 1) then return({});
-    numSolns := value s#0;
-    n := sub((#s-2)/numSolns - 1,ZZ);
-    s = apply(delete("",drop(s,1)),s->apply(separate(" ",s),value));
-    
-    distinctSolns := table(numSolns,n,(i,j)->s#(n*i+j));
-    distinctSolns
-    )
-
-
-
-
 
 
 ---------------------------------------
