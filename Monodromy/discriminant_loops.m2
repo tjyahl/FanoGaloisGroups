@@ -23,7 +23,10 @@ p = numgens C;
 worked = false;
 bigCount = 1;
 while not worked do (
-    print("START BIG COUNTER = "|toString(bigCount));
+    print("");
+    print("");
+    print("");
+    print("COUNTER = "|toString(bigCount));
 
 --Choice of singular solution
 ----K is the linear constraints on the coefficients for singSoln to be a solution of F
@@ -39,7 +42,8 @@ K' = sub(transpose last coefficients(kervec*(phi jacobian F),Monomials=>gens C),
 --Least squares method to choose coefficients closest to a specified vector of coefficients v
 ----for some reason "gens ker (K||K')" seems unstable? current code taken from M2 Core "kernel" method without "mingens".
 kergens = syz gb(K||K',Syzygies=>true);
-v = random(CC^p,CC^1);
+--v = random(CC^p,CC^1);
+v = transpose matrix{coordinates M#basePoint};
 xLS = solve(kergens,v,ClosestFit=>true,MaximalRank=>true);
 singBase = flatten entries transpose (kergens*xLS);
 
@@ -54,31 +58,60 @@ kervec*(singTest(jacobian F));
 
 --The affine line (1-t)(M#basePoint)+t(singBase) has the singular base at t=1. The points newBase, pt1, and pt2 form a small triangle around singBase.
 ----might need to play with eps. 
-eps = .005;
+eps = .5;
+print("eps = "|toString(eps));
 t0 = 1 + eps;
-t1 = 1 + eps*exp(2*pi*ii/3);
-t2 = 1 + eps*exp(4*pi*ii/3);
-
 newBase = point {(1-t0)*(coordinates M#basePoint) + t0*singBase};
-pt1 = point {(1-t1)*(coordinates M#basePoint) + t1*singBase};
-pt2 = point {(1-t2)*(coordinates M#basePoint) + t2*singBase};
 
 --Change base point to newBase
 ----Option NumPaths does a Monte Carlo method to obtain solution over the new base by tracking along at most the given number of paths.
-try(N = changeBasePoint(M,newBase,NumPaths=>300,Tolerance=>1e-5,Verbose=>true)) else (bigCount = bigCount + 1; print("changing base failed"); continue);
-
+print("changing base");
+try(N = changeBasePoint(M,newBase,NumPaths=>150,Tolerance=>1e-4,Verbose=>true)) else (bigCount = bigCount + 1; print("changing base failed"); continue);
 
 --Track solutions along the small triangular loop described by newBase, pt1, and pt2. 
 ----Verbosity=>2 prints all errors and the obtained permutation
-try(N = monodromyLoop(N,{pt1,pt2},Verbosity=>2)) else (bigCount = bigCount + 1; print("monodromyLoop failed"); continue);
-worked = true
+--print("tracking along loop");
+--try(N = monodromyLoop(N,{pt1,pt2},Verbosity=>2)) else (bigCount = bigCount + 1; print("monodromyLoop failed"); continue);
+monodfail = 0;
+monodsuccess = 0;
+successes = {};
+while(eps > .001) do (
+    eps = eps/2;
+    print("eps = "|toString(eps));
+    t0 = 1 - eps;
+    newBase = point {(1-t0)*(coordinates M#basePoint) + t0*singBase};
+    
+    print("changing base");
+    try(N = changeBasePoint(N,newBase,NumPaths=>150,Tolerance=>1e-4,Verbose=>true)) else (bigCount = bigCount + 1; print("changing base failed"); break; continue);
+    
+    if (eps < .01) then (
+	t1 = 1 + eps*exp(2*pi*ii/3);
+    	t2 = 1 + eps*exp(4*pi*ii/3);
+	pt1 = point {(1-t1)*(coordinates M#basePoint) + t1*singBase};
+    	pt2 = point {(1-t2)*(coordinates M#basePoint) + t2*singBase};
+	
+	print("tracking along loop");
+    	try(N = monodromyLoop(N,{pt1,pt2},Verbosity=>2)) else (bigCount = bigCount + 1; print("monodromyLoop failed"); monodfail = monodfail+1; break);
+	monodsuccess = monodsuccess + 1;
+	)
+    );
+if monodfail > 2 then continue;
+if monodsuccess > 2 then successes = successes|{N};
+
+if #success > 5 then (
+    worked = true
+    )
 )
+
+
 saveMonodromy(N,FanoProblem|"/monod.txt")
 myFile = FanoProblem|"/pts.txt"
 myFile << toExternalString({pt1,pt2}) << close
 
 
 end
+
+
 
 
 
