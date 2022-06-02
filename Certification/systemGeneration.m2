@@ -20,6 +20,13 @@ n = numgens R
 m = numgens C
 
 
+--Start system data
+FanoProblem = fold((a,b)->a|"_"|b,(splice FanoData)/toString)
+problemFile = "../StartSystems/"|FanoProblem|".txt"
+try (M = loadMonodromy(problemFile)) else (M = FanoMonodromy(FanoData,Verbose=>true))
+
+
+
 --Choice of singular solution
 singSoln = apply(n,i->(random(-3,3)*random(100)/100+I*random(-3,3)*random(100)/100));
 
@@ -41,7 +48,9 @@ K' = sub(transpose last coefficients(kervec*J,Monomials=>gens C),GR);
 ----use least squares to determine coefficients closest to a reasonable vector of coefficients, v.
 ----choose vector of coefficients so that solutions have moderate size/condition numbers?
 kergens = gens kernel (K||K');
-v = transpose matrix {apply(m,i->random(CC))};
+v = transpose matrix {coordinates M#basePoint};
+--v = transpose matrix {apply(m,i->random(CC))};
+
 
 CCmap = map(CC,GR,{ii+0.0});
 xLS = solve(CCmap(kergens),v,ClosestFit=>true,MaximalRank=>true);
@@ -64,11 +73,6 @@ CCsingSoln = singSoln/CCmap
 
 max apply(CCsingBase,abs)
 
-
---Start system data
-FanoProblem = fold((a,b)->a|"_"|b,(splice FanoData)/toString)
-problemFile = "../StartSystems/"|FanoProblem|".txt"
-try (M = loadMonodromy(problemFile)) else (M = FanoMonodromy(FanoData,Verbose=>true))
 
 
 --Systems needed for numerical methods

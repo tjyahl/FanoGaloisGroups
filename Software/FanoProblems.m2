@@ -57,7 +57,8 @@ export{
     "NumPaths",
     "RefineSolns",
     "RefineStartSolns",
-    "RefineEndSolns"
+    "RefineEndSolns",
+    "LoopScale"
     }
 
 
@@ -323,7 +324,7 @@ refine (Monodromy) := Monodromy => o->M->(
 
 --Tracks solutions from base point to given points and back to base point.
 ----The resulting permutation of solutions is recorded.
-monodromyLoop = method(Options=>{RefineSolns=>false,Tolerance=>1e-4,Verbosity=>0,stepIncreaseFactor=>2,tStep=>1e-6,maxCorrSteps=>3,CorrectorTolerance=>1e-8,tStepMin=>1e-30})
+monodromyLoop = method(Options=>{RefineSolns=>false,Tolerance=>1e-4,Verbosity=>0,LoopScale=>.5,stepIncreaseFactor=>3,tStep=>1e-8,maxCorrSteps=>2,CorrectorTolerance=>1e-6,tStepMin=>1e-30})
 monodromyLoop (Monodromy,List) := Monodromy => o-> (M,pts)->(
     F := M#family;
     R := ring F;
@@ -380,7 +381,7 @@ monodromyLoop (Monodromy,List) := Monodromy => o-> (M,pts)->(
 ----resulting permutation of solutions is recorded.
 monodromyLoop (Monodromy) := Monodromy => o-> M->(
     n := numgens coefficientRing ring (M#family);
-    pts := apply(2,i->point {coordinates M#basePoint + apply(n,j->.5*(random(CC)-random(CC)) )});
+    pts := apply(2,i->point {coordinates M#basePoint + o.LoopScale*apply(n,j->(random(CC)-random(CC)) )});
     
     monodromyLoop(M,pts,o)
     )
