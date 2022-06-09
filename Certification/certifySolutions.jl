@@ -1,264 +1,106 @@
-###################
-##FANOPROBLEMS.JL##
-###################
+#######################
+##CERTIFYSOLUTIONS.JL##
+#######################
 #
 # Thomas Yahl
 # Thomasjyahl@tamu.edu
-# Created 5/27/22
+# Created 6/7/22
 #
-# Code for exploring Fano problems and their Galois groups
+# Code for certifying data given in specified data folders
 #
 
-using IterTools
-using MultivariatePolynomials
-using HomotopyContinuation
-using LinearAlgebra
-using Nemo
+include("../Software/Fano.jl")
 
+FanoProblems = [(1,7,[2,2,2,2]),(1,6,[2,2,3]),(2,8,[2,2,2]),(1,5,[3,3]),(1,5,[2,4]),(1,10,[2,2,2,2,2,2]),(1,9,[2,2,2,2,3]),(2,10,[2,2,2,2]),(1,8,[2,2,3,3])]
 
-#####################
-##UTILITY FUNCTIONS##
-#####################
-
-function subsetToPartition(S,n)
-    [if i==1
-        S[1]-1
-        elseif i==length(S)+1
-        n+length(S)-last(S)
-        else
-        S[i]-S[i-1]-1
-        end
-    for i in 1:length(S)+1]
-end
-
-
-
-#############
-##FUNCTIONS##
-#############
-
-#Checks whether the Fano problem is finite
-function isFiniteFano(r::Int,n::Int,degs::Vector{Int})
-    (n-r)*(r+1) == sum(binomial.(degs.+r,r))
-end
-
-
-
-#Computes the defining equations of the desired linear spaces in a coordinate chart of the appropriate Grassmanian
-function FanoEquations(r::Int,n::Int,degs::Vector{Int})
-    if !isFiniteFano(r,n,degs)
-        error("Not a finite Fano problem")
-    end
-    s = length(degs)
+for FanoData in FanoProblems
+    ####################
+    ##LOAD SYSTEM DATA##
+    ####################
+    #r is the dimension of the sought linear spaces
+    #n is the dimension of the ambient space
+    #degs is the list of degrees of generic homogeneous polynomials
+    (r,n,degs) = FanoData
+    FanoDegree = FanoNumSolns(r,n,degs)
+    FanoFolder = string(r)*"_"*string(n)*"_"*foldl((a,b)->a*"_"*b,map(string,degs))*"/"
+    print("Checking Fano problem "*string(FanoData)*"\n")
     
-    #equations for complete intersection of polynomials with given degrees
-    numParameters = sum(binomial.(degs.+n,n))
-    @polyvar x[1:n+1] t[1:r+1] y[1:(n-r)*(r+1)] p[1:numParameters]
-    monoms = [transpose(HomotopyContinuation.monomials(x,d)) for d in degs]
-    splits = vcat([0],accumulate(+,binomial.(degs.+n,n)))
-    eqParams = [p[splits[i]+1:splits[i+1]] for i=1:s]
-    F = monoms.*eqParams
-    
-    #linear space parameterization and substitution
-    ℓ = vcat([sum(y[(r+1)*(i-1)+1:(r+1)*i].*t) for i=1:n-r],t)
-    F̂ = subs(F,x=>ℓ)
-    
-    #pull t coefficients (painful in Julia?)
-    eqns = [];
-    for i=1:s
-    	monoms = HomotopyContinuation.monomials(t,degs[i])
-    	for m in monoms
-	    append!(eqns,[coefficient(F̂[i],m,t)])
-	end
-    end    
-    eqns = subs.(eqns,t=>ones(Int,r+1))
-
-    (eqns,y,p)
-end
-
-
-
-#Computes the number of solutions to a finite Fano problem by the formula of Debarre and Manivel
-function FanoNumSolns(r::Int,n::Int,degs::Vector{Int})
-    @polyvar x[1:r+1]
-    degreePartitions = foldl(vcat,[map(S->subsetToPartition(S,d),subsets(1:r+d,r)) for d in degs])
-    Q = prod(P->sum(P.*x),degreePartitions)
-    V = prod(i->prod(j->x[i]-x[j],i+1:r+1),1:r)
-    m = prod(i->x[i]^(n+1-i),1:r+1)
-    coefficient(Q*V,m)
-end
-
-
-
-#Computes a start system based off a given (exact) start solution
-function FanoStartSystem(r::Int,n::Int,degs::Vector{Int},startSoln::Vector{Complex{Rational{BigInt}}})
-    #create equations and linear constraints for startSoln to be a solution
+    #Load system data and create system
+    #F is the family of systems computing r-planes on the intersection of polynomials f₁,..,fₛ of degrees d₁,..,dₛ.
+    #The polynomials f₁,..,fₛ are written in graded lex monomial order with coefficients given by p₁,..,pₖ. The p₁,..,pₖ are then the parameters of the family F.
+    #systemCoeffs is the choice of parameters p₁,..,pₖ for a specific Fano problem, giving a system of polynomial equations F̄.
+    #singSoln is the singular solution to F̄.
+    #tangVec is a tangent vector at the singular solution to F̄.
+    #nonsingSolns is the list of smooth solutions to F̄.
     (F,y,p) = FanoEquations(r,n,degs)
-    evalEqns = subs.(F,y=>startSoln)
+    (systemCoeffs,singSoln,tangVec,nonsingSolns) = loadData(r,n,degs)
+    F̄ = subs.(F,p=>systemCoeffs)
+    print("Data for singular system F̄ loaded\n")
     
-    #created for exact computation of matrix kernel
-    (R,x) = PolynomialRing(QQ,"x")
-    (QQi,ii) = NumberField(x^2+1,"I")
-
-    #create matrix from linear constraints, convert to Nemo matrix for exact nullspace
-    A = transpose(hcat(map(f->coefficient.(f,p),evalEqns)...))
-    A = map(z->real(z)+ii*imag(z),A)
-    (numrows,numcols) = size(A)
-    M = MatrixSpace(QQi,numrows,numcols)
-
-    #compute exact nullspace, transform back to Complex{Rational{BigInt}} matrix
-    K = nullspace(M(A))[2]
-    K = map(z->Rational(coeff(z,0))+im*Rational(coeff(z,1)),Matrix(K))
-
-    #find system with coefficients closest to all ones vector
-    leastSquareSoln = K \ ones(sum(binomial.(degs.+n,n)))
-    leastSquareSoln = map(z->Rational(real(z))+im*Rational(imag(z)),leastSquareSoln)
-    coeffs = K*leastSquareSoln
-    
-    #substitute coefficients into system
-    (F,y,p,coeffs,startSoln)
-end
-
-function FanoStartSystem(r::Int,n::Int,degs::Vector{Int})
-    startSoln = [BigInt(rand(-10:10))//rand(1:10) + rand(-10:10)//rand(1:10)*im for i in 1:(n-r)*(r+1)]
-    FanoStartSystem(r,n,degs,startSoln)
-end
-
-
-
-#Computes a complex rational system with a complex rational simple double root (with high probability)
-function FanoSimpleSingularSystem(r::Int,n::Int,degs::Vector{Int},singSoln::Vector{Complex{Rational{BigInt}}},tangVec::Vector{Complex{Rational{BigInt}}},startSoln::Vector{Complex{Rational{BigInt}}})
-    #create equations
-    (F,y,p) = FanoEquations(r,n,degs)
-
-    #linear constraints for singSoln to be a solution
-    evalEqns = subs.(F,y=>singSoln)
-
-    #linear constraints for singSoln to be a simple multiple root with tangent direction tangVec
-    J = transpose(differentiate.(transpose(F),y))
-    jacEqns = subs.(J,y=>singSoln)*tangVec
-
-    #linear constraints for startSoln to be a solution (mostly for starting monodromy)
-    evalStartEqns = subs.(F,y=>startSoln)
-
-    #created for exact computation of matrix kernel
-    (R,x) = PolynomialRing(QQ,"x")
-    (QQi,ii) = NumberField(x^2+1,"I")
-
-    #create matrix from linear constraints evalEqns and jacEqns, convert to Nemo matrix for exact nullspace
-    A = transpose(hcat(map(f->coefficient.(f,p),vcat(evalEqns,jacEqns,evalStartEqns))...))
-    A = map(z->real(z)+ii*imag(z),A)
-    (numrows,numcols) = size(A)
-    M = MatrixSpace(QQi,numrows,numcols)
-
-    #compute exact nullspace, transform back to Complex{Rational{BigInt}} matrix
-    K = nullspace(M(A))[2]
-    K = map(z->Rational(coeff(z,0))+im*Rational(coeff(z,1)),Matrix(K))
-
-    #find system with coefficients closest to all ones vector
-    leastSquareSoln = K \ ones(sum(binomial.(degs.+n,n)))
-    leastSquareSoln = map(z->Rational(real(z))+im*Rational(imag(z)),leastSquareSoln)
-    coeffs = K*leastSquareSoln
-    
-    #substitute coefficients into system
-    G = subs.(F,p=>coeffs)
-    (F,y,p,coeffs,singSoln,tangVec,startSoln)
-    
-end
-
-function FanoSimpleSingularSystem(r::Int,n::Int,degs::Vector{Int})
-    singSoln = [BigInt(rand(-10:10))//rand(1:10) + rand(-10:10)//rand(1:10)*im for i in 1:(n-r)*(r+1)]
-    
-    tangVec = [BigInt(rand(-10:10))//rand(1:10) + rand(-10:10)//rand(1:10)*im for i in 1:(n-r)*(r+1)]
-    startSoln = [BigInt(rand(-10:10))//rand(1:10) + rand(-10:10)//rand(1:10)*im for i in 1:(n-r)*(r+1)]
-    FanoSimpleSingularSystem(r,n,degs,singSoln,tangVec,startSoln)
-end
-
-
-
-
-
-#Check that singSoln is singular solution and startSoln is solution as well. These should all be zero.
-r = 1
-n = 6
-degs = [2,2,3]
-(F,y,p,coeffs,singSoln,tangVec,startSoln) = FanoSimpleSingularSystem(r,n,degs);
-G = subs.(F,p=>coeffs);
-subs.(G,y=>startSoln)
-subs.(G,y=>singSoln)
-transpose(subs.(differentiate.(transpose(G),y),y=>singSoln))*tangVec
-
-(F,y,p,coeffs,startSoln) = FanoStartSystem(r,n,degs);
-
-#restrict to line in parameter space
-@polyvar t
-ℓ = coeffs.*(1-t)+[BigInt(rand(-5:5))//rand(1:5) + rand(-50:50)//rand(1:5)*im for i in 1:sum(binomial.(degs.+n,n))].*t;
-
-F̂ = subs.(F,p=>ℓ);
-monodromy_solve(F̂,[startSoln],[0],parameters=[t])
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Just don't use?
-#Loads data from Certification folders
-function valueQQ(s::AbstractString)
-    s = replace(s,r"\(|\)|\{|\}| "=>"")
-    L = split(s,"/")
-    if length(L)==1
-	parse(BigInt,L[1])
+    #############################
+    ##VERIFY SIMPLE DOUBLE ROOT##
+    #############################
+    #Check that singSoln is a solution of F̄
+    #Note: the convert statement is needed for type checking
+    evaluatedSystem = subs.(F̄,y=>singSoln)
+    if (evaluatedSystem == convert(typeof(evaluatedSystem),zeros((r+1)*(n-r))))
+        print("F̄(singSoln) = 0. Given exact point is exact zero of system\n")
     else
-	parse(BigInt,L[1])//parse(BigInt,L[2])
+        print("Error: Given exact point is NOT exact zero of system\n")
     end
+    
+    #Check that tangVec ∈  ker DF̄(singSoln) so that singSoln is a singular solution of F̄
+    #J is the jacobian of the system
+    J = transpose(differentiate.(transpose(F̄),y))
+    JEvaluated = convert(Matrix{Complex{Rational{Int64}}},subs.(J,y=>singSoln))
+    if (JEvaluated*tangVec == convert(typeof(J*tangVec),zeros((r+1)*(n-r))))
+        print("DF̄(singSoln)*tangVec = 0. Given exact point is singular solution of system\n")
+    else
+        print("Error: Issue showing exact point is singular solution of system\n")
+    end
+    
+    #Check that singSoln is a simple double root in the sense of Shub
+    #This amounts to checking:
+    #1) rank DF̄(singSoln) = (r+1)*(n-r)-1 or equivalently, dim ker DF̄(singSoln) = 1
+    #2) D²F̄(singSoln)(tangVec,tangVec) ∉  Im DF̄(singSoln)
+    #Note: julia's linear algebra package does not do exact computations, Nemo is necessary for this purpose. The number field QQi is the rational numbers adjoin the imaginary unit i, written as ii. Nemo works over this number ring.
+    (R,x) = PolynomialRing(QQ,"x")
+    (QQi,ii) = NumberField(x^2+1,"I")
+    M = MatrixSpace(QQi,(r+1)*(n-r),(r+1)*(n-r))
+    
+    #Checking 1 above
+    JNemo = M(map(z->real(z)+ii*imag(z),JEvaluated))
+    (nullity,v) = nullspace(JNemo)
+    if (nullity == 1) 
+        print("dim ker DF̄(singSoln) = 1. Tangent space at exact singular solution has dimension 1\n")
+    else
+        print("Error: Tangent space does not have dimension 1\n")
+    end
+
+    #Checking 2 above
+    H = [subs.(differentiate(f,y,2),y=>singSoln) for f in F̄]
+    HContracted = [transpose(tangVec)*hes*tangVec for hes in H]
+    
+    N = MatrixSpace(QQi,(r+1)*(n-r),1)
+    HContractedNemo = N(map(z->real(convert(Complex{Rational{Int64}},z))+ii*imag(convert(Complex{Rational{Int64}},z)),HContracted))
+
+    if (rank(hcat(JNemo,HContractedNemo)) == (r+1)*(n-r))
+        print("D²F̄(singSoln)(tangVec,tangVec) ∉  Im DF̄(singSoln) so singSoln is a simple double root\n")
+    else
+        print("Error: Second condition failed\n")
+    end
+
+    ###############################
+    ##CERTIFY REMAINING SOLUTIONS##
+    ###############################
+    #Certify remaining solutions
+    print("Degree of Fano problem: "*string(FanoDegree)*"\n")
+    @time C = certify(F̄,nonsingSolns)
+    certifiedSolns = filter(c->c.certified,C.certificates)
+    print("Number of certified solutions: "*string(length(certifiedSolns))*"\n")
+    if all(c->!(singSoln in c.I),certifiedSolns)
+        print("singSoln is not contained in any certification interval\n\n")
+    else
+        print("singSoln is contained in some certification interval\n\n")
+    end 
 end
-
-function valueQQI(s::AbstractString)
-    s = replace(s,r"\(|\)|\{|\}| "=>"")
-    L = filter(!isempty,split(s,"I"))
-    sum(a->(contains(a,'*') && !isempty(a)) ? valueQQ(replace(a,r"\*"=>""))*im : valueQQ(a),L) + 0//1*im
-end
-
-function loadFanoData(r::Int,n::Int,degs::Vector{Int})
-    FanoProblem = "$(r)_$(n)_"*foldl((a,b)->a*"_"*b,map(string,degs))*"/"
-    dataFile = open(FanoProblem*"systemData.txt")
-    systemData = readlines(dataFile)
-    close(dataFile)
-
-    coeffs = valueQQI.(split(systemData[3],","))
-    startSoln = valueQQI.(split(systemData[4],","))
-
-    (F,y,p) = FanoEquations(r,n,degs)
-    F̂ = subs.(F,p=>coeffs,y=>startSoln)
-
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -41,7 +41,6 @@ for FanoProblem in {"1_7_2_2_2_2","1_6_2_2_3","2_8_2_2_2","1_5_3_3","1_5_2_4"} d
     
     
     print("Certifying solutions");
-    --CHECK IF THIS NEEDS TO BE FIXED
     elapsedTime (S = certifySolutions(F,solns));
     print(#S|" certified solutions of singular system");
     print((FanoNumSolns systemData#0)|" expected solutions")

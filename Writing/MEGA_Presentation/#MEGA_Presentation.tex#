@@ -1,0 +1,519 @@
+\documentclass{beamer}
+\usepackage{amsmath,amssymb,amsthm,tikz,color,wrapfig}
+\usetheme{metropolis}
+\setbeamertemplate{footline}[default]
+
+\definecolor{azure}{rgb}{0.4, 0.2, 1.0}
+\definecolor{cinnamon}{rgb}{0.82, 0.41, 0.12}
+\definecolor{bur}{rgb}{0.6, 0.0, 0.0}
+
+\title{Computing Galois groups of Fano problems}
+\author{Thomas Yahl\\  \texttt{thomasjyahl@tamu.edu}\\ \vspace{-.1cm} \\ \texttt{arXiv:}\\ \vspace{-.1cm} \\ Texas A\&M University}
+\date{June 2022}
+
+
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}
+
+%%%%%%%%%%%%
+%%Commands%%
+%%%%%%%%%%%%
+\newcommand{\new}[1]{{\color{black!10!blue}#1}}
+\newcommand{\blue}[1]{{\color{black!10!blue}\underline{#1}}}
+\newcommand{\orange}[1]{{\color{black!15!cinnamon}\underline{#1}}}
+
+
+%%%%%%%%%%%%%%%%%
+%%Rough Outline%%
+%%%%%%%%%%%%%%%%%
+%Computing Galois groups of Fano problems
+%
+%1. 27 lines (1 slide + picture)
+%      mention "remakable configuration of lines"
+%      Fano problems are generalizations of this
+%   
+%2. Fano problems (1 slide w/ example)
+%      definition
+%      dimension/degree (DM)
+%      finite Fano problems
+%      (1,6,(2,2,3)) example
+%   
+%3. Galois groups (2 slide + picture/gif?)
+%      incidence variety
+%      Galois group is monodromy group
+%      path lifting (w/ picture)
+%   
+%4. Known results (1 slide)
+%      Jordan/Harris for 27 lines
+%      Hoshimoto & Kadets
+%      remaining problems are alternating or symmetric
+%      explore and prove with numerics
+%
+%5. Monodromy via homotopy continuation (3 slides, "would like to turn into proof")
+%      necessary homotopy continuation slide (w/ picture)
+%      small discriminant loop output for 27 lines and (1,6,(2,2,3))
+%      computations, this is evidence we want proof
+%
+%6. Harris' method (1 slide + picture)
+%      (1,n,(2n-3)) have symmetric Galois groups
+%      Harris' method of proof (w/ picture)
+%      this can be done computationally
+%
+%7. Certification (maybe 3 slides? picture? emphasize hard certification)
+%      Smale's alpha theory
+%      interval arithmetic
+%      Shub's simple double roots
+%
+%8. Computations
+%      constructing systems with unique simple double roots
+%      certifying them w/ alpha theory/interval arithmetic + Shub
+%      timings
+%
+%9. Moving forward
+%      more computations
+%      proving the result for all Fano problems
+%
+
+\begin{document}
+
+%title frame
+\begin{frame}
+\titlepage
+
+\texttt{arXiv:}
+\end{frame}
+
+
+%Frame 2
+%27 lines (1 slide + picture)
+%%mention "remakable configuration of lines"
+%%Fano problems are generalizations of this
+\begin{frame}
+\frametitle{The problem of lines on a cubic surface}
+\hspace{-.8cm}
+\begin{minipage}{.55\textwidth}
+\begin{enumerate}
+\item[$\bullet$] Cayley and Salmon showed there are 27 distinct lines that lie on a smooth cubic surface.
+
+\item[$\bullet$] Schl\"{a}fli determined these lines lie in a ``remarkable configuration'' 
+
+\item[$\bullet$] A \blue{Fano problem} is the problem of enumerating linear spaces of a fixed dimension on a variety.
+\end{enumerate}
+\end{minipage}
+%
+\begin{minipage}{.02\textwidth}
+~
+\end{minipage}
+%
+\begin{minipage}{.4\textwidth}
+%27 lines picture
+\begin{center}
+\includegraphics[scale=.32]{figures/27lines.pdf}
+\end{center}
+\end{minipage}
+
+
+\end{frame}
+
+
+%Frame 3
+%Fano problems (1 slide w/ example)
+%%definition
+%%dimension/degree (DM)
+%%finite Fano problems
+%%(1,6,(2,2,3)) example
+\begin{frame}
+\frametitle{Fano problems}
+\begin{enumerate}
+\item[$\bullet$] For fixed degrees $d_\bullet = (d_1,\dotsc,d_s)$ choose homogeneous polynomials in $n+1$ variables, $F = (f_1,\dotsc,f_s)$.
+
+\item[$\bullet$] Enumerate the $r$-planes that lie on the zero set $X = V(F)\subseteq\mathbb{P}^n$.
+\end{enumerate}
+
+When there are finitely many such $r$-planes for general polynomials $F = (f_1,\dotsc,f_s)$, this is a \blue{Fano problem} determined by $(r,n,d_\bullet)$.
+
+\begin{enumerate}
+\pause
+
+\item[$\bullet$] The set of $r$-planes on $X=V(F)$, written $V_r(F)$, is a subvariety of the Grassmanian $\mathbb{G}(r,\mathbb{P}^n)$.
+
+\pause
+
+\item[$\bullet$] The combinatorial data $(r,n,d_\bullet)$ determines a Fano problem when $n-s-2r\ge 0$ and
+
+\vspace{-.8cm}
+
+\begin{align*}
+(r+1)(n-r) - \sum_{i=1}^s \left(\begin{smallmatrix}d_i + r\\r\end{smallmatrix}\right)=0.
+\end{align*}
+\end{enumerate}
+
+\end{frame}
+
+%Frame 4
+%rewrite this slide
+\begin{frame}
+\frametitle{Examples}
+Debarre and Manivel determined the number of solutions to the Fano problem determined by the data $(r,n,d_\bullet)$ by intersection theoretic means. Write this number as $\deg(r,n,d_\bullet)$.
+
+We list all Fano problems with less than 1000 solutions below.
+
+\begin{table}[htb]
+  \label{Small Fano}
+  \def\arraystretch{1.1}
+  \begin{tabular}{||c|c|c|c|c||}
+    \hline
+    $r$ & $n$ & $d_\bullet$ & $\deg(r,n,d_\bullet)$ & Galois group\\
+    \hline\hline
+    1 & 4 & $(2,2)$ & 16 & $D_5$\\
+    \hline
+    1 & 3 & $(3)$ & 27 & $E_6$\\
+    \hline
+    2 & 6 & $(2,2)$ & 64 & $D_7$\\
+    \hline
+    3 & 8 & $(2,2)$ & 256 & $D_9$\\
+    \hline
+    1 & 7 & $(2,2,2,2)$ & 512 & \new{$S_{512}$}\\
+    \hline
+    1 & 6 & $(2,2,3)$ & 720  & \new{$S_{720}$}\\
+    \hline
+  \end{tabular}
+\end{table}
+\end{frame}
+
+
+%Frame 5
+%Galois groups (2 slide + picture/gif?)
+%%incidence variety
+%%Galois group is monodromy group
+%%path lifting (w/ picture)
+\begin{frame}
+\frametitle{Incidence correspondence}
+Write $\mathbb{C}^{(r,n,d_\bullet)}$ for the parameter space of homogeneous forms $(f_1,\dotsc,f_s)$ in $n+1$ variables of degrees $d_\bullet = (d_1,\dotsc,d_s)$.
+
+%For the Fano problem determined by $(r,n,d_\bullet)$, there is an incidence correspondence
+Fix $(r,n,d_\bullet)$. There is an incidence correspondence
+
+\vspace{-.3cm}
+
+\begin{center}
+\begin{tikzpicture}
+\node at (0,0) {$\Gamma_{(r,n,d_\bullet)} = \{(F,\ell)\in \mathbb{C}^{(r,n,d_\bullet)}\times\mathbb{G}(r,n):F|_\ell = 0\}$};
+\node at (-3.3,-1.75) {$\mathbb{C}^{(r,n,d_\bullet)}$};
+\draw[->] (-3.3,-.3)--(-3.3,-1.55) node[left] at (-3.4,-.875) {$\pi_{(r,n,d_\bullet)}$};
+\end{tikzpicture}
+\end{center}
+
+\vspace{-.45cm}
+
+\begin{enumerate}
+\item[$\bullet$] $\Gamma_{(r,n,d_\bullet)}$ is irreducible.
+
+\item[$\bullet$] $\deg \pi_{(r,n,d_\bullet)} = \deg(r,n,d_\bullet)$ and the fiber over $F\in\mathbb{C}^{(r,n,d_\bullet)}$ is the set of $r$-planes $V_r(F)$.
+
+\item[$\bullet$] $\pi$ restricts to a covering space over a Zariski open set $U_{(r,n,d_\bullet)}\subseteq\mathbb{C}^{(r,n,d_\bullet)}$.
+
+\end{enumerate}
+\end{frame}
+
+
+%Frame 6
+%\item[$\bullet$] Jordan showed $\mathcal{G}_{(1,3,(3))}\subseteq E_6$.
+%
+%\vspace{.1cm}
+%
+%\item[$\bullet$] Harris showed $\mathcal{G}_{(1,3,(3))} = E_6$ and $\mathcal{G}_{(1,n,(2n-3))}$ is symmetric.
+%
+%\vspace{.1cm}
+%
+%\item[$\bullet$] Hashimoto and Kadets showed $\mathcal{G}_{(r,2r+2,(2,2))}=D_{2r+3}$ and $\mathcal{G}_{(r,n,d_\bullet)}$ \\
+%contains the alternating group for \\
+%remaining Fano problems.
+\begin{frame}
+\frametitle{Galois groups of Fano problems}
+\hspace{-.65cm}
+\begin{minipage}{.73\textwidth}
+\begin{enumerate}
+\item[$\bullet$] The \blue{Galois group}, $\mathcal{G}_{(r,n,d_\bullet)}$, of the Fano problem determined by $(r,n,d_\bullet)$ is the monodromy group of $\pi_{(r,n,d_\bullet)}$.
+
+\vspace{.1cm}
+
+\item[$\bullet$] Jordan/Harris: $\mathcal{G}_{(1,3,(3))} = E_6$
+
+\vspace{.1cm}
+
+\item[$\bullet$] Harris: $\mathcal{G}_{(1,n,(2n-3))}$ is symmetric for $n\ge 4$
+
+\vspace{.1cm}
+
+\item[$\bullet$] Hashimoto/Kadets: $\mathcal{G}_{(r,2r+2,(2,2))} = D_{2r+3}$
+
+\vspace{.1cm}
+
+\item[$\bullet$] Hashimoto/Kadets: All other $\mathcal{G}_{(r,n,d_\bullet)}$ contain the alternating group
+\end{enumerate}
+\end{minipage}
+%
+\begin{minipage}{.25\textwidth}
+\begin{center}
+\includegraphics[scale=.5]{figures/monodromy.pdf}
+\end{center}
+\end{minipage}
+
+\vspace{.25cm}
+
+\textbf{\underline{Goal:}} use numerics \underline{prove} remaining Galois groups contain a simple transposition and are therefore symmetric. 
+
+\end{frame}
+
+%Frame 7
+%Monodromy via homotopy continuation (2 slides, "would like to turn into proof")
+%%necessary homotopy continuation slide (w/ picture)
+%%small discriminant loop output for 27 lines and (1,6,(2,2,3))
+%%computations, this is evidence we want proof
+%\begin{frame}
+%\frametitle{Numerical homotopy continuation}
+
+
+%Numerical homotopy picture
+%\begin{center}
+%\begin{tikzpicture}
+%\draw[thick,<->] (-2.75,0)--(2.75,0) node [right] at (2.75,0) {$t$};
+%\draw[dashed] (-2,-.75)--(-2,1.75) node [below] at (-2,-.75) {$\mathcal{F}$};
+%\draw[dashed] (2,-.75)--(2,1.75) node [below] at (2,-.75) {$\mathcal{G}$};
+
+%\draw[blue,fill=blue] (2,-.3) circle (.05cm);
+%\draw[blue,fill=blue] (-2,.3) circle (.05cm);
+%\draw[blue,thick] (2,-.3)..controls(.9,-.5)..(.2,.6)..controls(-.1,1)..(-.65,.8);
+%\draw[blue,thick] (-.85,.7)..controls(-1,.65)..(-2,.3);
+
+%\draw[black!30!green,fill=black!30!green] (2,.15) circle (.05cm);
+%\draw[black!30!green,fill=black!30!green] (-2,1.5) circle (.05cm);
+%\draw[black!30!green,thick] (2,.15)..controls(1.5,.3)..(.8,-.1);
+%\draw[black!30!green,thick] (.6,-.2)..controls(.3,-.3)..(-.3,.35)..controls(-1,1)..(-2,1.5);
+
+%\draw[black!15!red,fill=black!15!red] (2,1.4) circle (.05cm);
+%\draw[black!15!red,thick] (2,1.4)..controls(1.2,1)..(.4,1.2)..controls(-.5,1.4)..(-1,1.1);
+%\draw[black!15!red,thick] (-1.2,.9)..controls(-1.3,.8)..(-1.45,.6);
+%\draw[black!15!red,thick,->] (-1.6,.35)..controls(-1.75,.1)..(-1.85,-.6);
+%\end{tikzpicture}
+%\end{center}
+
+
+%\end{frame}
+
+%Frame 8
+%\begin{frame}
+%\frametitle{Computations}
+
+%\end{frame}
+
+
+%Frame 9
+%Harris' method (1 slide + picture)
+%%(1,n,(2n-3)) have symmetric Galois groups
+%%Harris' method of proof (w/ picture)
+%%this can be done computationally
+\begin{frame}
+\frametitle{Harris' method of proof}
+\begin{lemma}[Harris]
+
+\vspace{.05cm}
+
+Let $\pi:Y\mapsto X$ be a smooth map of degree $n$ between irreducible varieties. If there exists a point $p\in X$ such that the fiber $\pi^{-1}(p)$ consists of exactly $n-2$ simple points and one double point then the monodromy group of $\pi$ contains a simple transposition.
+\end{lemma}
+
+\vspace{.2cm}
+
+For remaining Fano problems of moderate size, we construct $p\in \mathbb{C}^{(r,n,d_\bullet)}$ satisfying the above.
+
+
+
+\end{frame}
+
+
+%Frame 10
+%Certification (maybe 2 slides? picture? emphasize hard certification)
+%%Smale's alpha theory
+%%interval arithmetic?????????????
+%%Shub's simple double roots
+%\begin{frame}
+%\frametitle{Numerical certification}
+%Fix a system $F:\mathbb{C}^n\to\mathbb{C}^n$ and $x\in\mathbb{C}^n$.
+
+%\begin{enumerate}
+%\item[$\bullet$] Smale's $\alpha$-theory attempts to find a ball centered at $x$ containing a unique smooth solution $x^\ast$ of $F$.
+%\begin{enumerate}
+%\item[$\circ$] When $\alpha$-theory succeeds, $x$ converges quadratically under Newton's method to $x^\ast$.
+
+%\item[$\circ$] When $x^\ast$ is given exactly an exact radius can be computed, providing an exact isolating region for a unique solution.
+
+%\item[$\circ$] The software \texttt{alphaCertified} will try to verify the
+%\end{enumerate}
+
+%\item[$\bullet$] Interval arithmetic 
+%\end{enumerate}
+%\end{frame}
+
+
+%Frame 10
+%Computations
+%%constructing systems with unique simple double roots
+%%certifying them w/ alpha theory/interval arithmetic + Shub
+%%timings
+\begin{frame}
+\frametitle{Harris' method in context}
+We have a smooth map $\pi:\Gamma_{(r,n,d_\bullet)}\to\mathbb{C}^{(r,n,d_\bullet)}$ of degree $\deg(r,n,d_\bullet)$ between irreducible varieties. For $F\in \mathbb{C}^{(r,n,d_\bullet)}$, the fiber is the set of linear spaces $V_r(F)$. 
+\begin{enumerate}
+\item[$\bullet$] We construct $F\in\mathbb{C}^{(r,n,d_\bullet)}$ so that $V_r(F)$ consists of $\deg(r,n,d_\bullet)-2$ simple points and one double point.
+
+\item[$\bullet$] To show our $F\in\mathbb{C}^{(r,n,d_\bullet)}$ has this property, we write our points as solutions to a system $\overline{F}$ with exact coefficients.
+
+\item[$\bullet$] We verify our system $\overline{F}$ has $\deg(r,n,d_\bullet)-2$ simple solutions and one solution of multiplicity 2 by certification.
+\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Constructing systems with a unique simple double root}
+\hspace{-.3cm}
+\begin{minipage}{.98\textwidth}
+\begin{enumerate}
+\item[$\bullet$] A \blue{simple double root} of a system $F$ is a root $x$ satisfying $\ker DF(x) = \langle v \rangle$ and $D^2F(x)(v,v)\not\in \text{im}\,DF(x)$. 
+
+\item[$\bullet$] By work of Shub, simple double roots are isolated solutions of multiplicity 2.
+\end{enumerate}
+\end{minipage}
+
+Construct a system with complex rational coefficients and a unique simple double root as follows.
+\vspace{-.15cm}
+\begin{enumerate}
+\item[1.] Choose $x,v\in\mathbb{C}^n$ with complex rational coordinates.
+
+\item[2.] Randomly choose $F\in\mathbb{C}^{(r,n,d_\bullet)}$ with complex rational coefficients such that $F(x)=0$ and $DF(x)v=0$.
+
+\item[3.] Check that $\dim \ker DF(x) = 1$ and $D^2F(x)(v,v)\not\in\text{im}\,DF(x)$.
+
+%\item[4.] Use certification to enumerate $\deg(r,n,d_\bullet)-2$ simple roots.
+\end{enumerate}
+\end{frame}
+
+%Frame 11
+%\begin{frame}
+%\frametitle{Example}
+
+%\end{frame}
+
+
+%Frame 12
+%Certification (maybe 2 slides? picture? emphasize hard certification)
+%%Smale's alpha theory
+%%Shub's simple double roots
+\begin{frame}
+\frametitle{Smale's $\alpha$-theory}
+Given a system $F:\mathbb{C}^n\to\mathbb{C}^n$ and $x\in\mathbb{C}^n$, there are associated quantities $\alpha(F,x)$, $\beta(F,x)$, and $\gamma(F,x)$. 
+
+\begin{thm}[Smale et al.]
+If $F:\mathbb{C}^n\mapsto\mathbb{C}^n$ is a system and $x\in\mathbb{C}^n$ with 
+\vspace{-.2cm}
+\begin{align*}
+\alpha(F,x) < \frac{13-3\sqrt{17}}{4},
+\end{align*}
+\vspace{-.85cm}
+
+then $x$ converges (quadratically) under Newton's method to a solution $x^\ast$ of $F$. Further, $||x-x^\ast||\le 2\beta(F,x)$.
+\end{thm}
+
+\begin{enumerate}
+\item[$\bullet$] When $F$ and $x$ are given by complex rationals, this provides an exact isolating ball for the solution $x^\ast$. 
+
+\item[$\bullet$] \texttt{alphaCertified} will check the inequality above and certify balls isolating solutions are disjoint, with exact arithmetic. 
+\end{enumerate}
+
+\end{frame}
+
+%Frame 13
+\begin{frame}
+\frametitle{Results and timings}
+\begin{thm}[Y.] 
+The Fano problems $(1,7,(2,2,2,2))$, $(1,6,(2,2,3))$, $(2,8,(2,2,2))$, $(1,5,(3,3))$, and $(1,5,(2,4))$ have symmetric Galois groups.
+\end{thm}
+
+\textbf{Timings} (via my laptop) to check that the constructed systems have a simple double root and to certify the remaining solutions lie in disjoint balls.
+
+\begin{table}[htb]
+  \label{Small Fano}
+  \def\arraystretch{1.1}
+  \begin{tabular}{||c|c|c|c|c||}
+    \hline
+    $r$ & $n$ & $d_\bullet$ & $\deg(r,n,d_\bullet)$ & Computation time (h)\\
+    \hline\hline
+    1 & 7 & $(2,2,2,2)$ & 512 & 2.66\\
+    \hline
+    1 & 6 & $(2,2,3)$ & 720  & 2.88\\
+    \hline
+    2 & 8 & $(2,2,2)$ & 1024 & 27.32\\
+    \hline
+    1 & 5 & (3,3) & 1053 & 2.69\\
+    \hline
+    1 & 5 & (2,4) & 1280 & 6.09\\
+    \hline
+  \end{tabular}
+\end{table}
+\end{frame}
+
+
+%Frame 14
+%Moving forward
+%more computations
+%proving the result for all Fano problems
+\begin{frame}
+\frametitle{Moving forward}
+This is ongoing work, there are many avenues to explore!
+\begin{enumerate}
+\item[$\bullet$] Generate systems with a single simple double root for larger Fano problems (in progress).
+
+\item[$\bullet$] Use interval arithmetic for faster certification (in progress).
+
+\item[$\bullet$] Show that such a system exists for all remaining Fano problems.
+
+\item[$\bullet$] 
+\end{enumerate}
+\end{frame}
+
+%Frame 15
+\begin{frame}
+\frametitle{References}
+
+\end{frame}
+
+\end{document}
+
+
+
+
+
+\begin{table}[htb]
+  \label{Small Fano}
+  \def\arraystretch{1.1}
+  \begin{tabular}{||c|c|c|c||}
+    \hline
+    $r$ & $n$ & $d_\bullet$ & $\#$ of solutions\\
+    \hline\hline
+    1 & 4 & $(2,2)$ & 16\\
+    \hline
+    1 & 3 & $(3)$ & 27 \\
+    \hline
+    2 & 6 & $(2,2)$ & 64 \\
+    \hline
+    3 & 8 & $(2,2)$ & 256 \\
+    \hline
+    1 & 7 & $(2,2,2,2)$ & 512 \\
+    \hline
+    1 & 6 & $(2,2,3)$ & 720 \\
+    \hline
+  \end{tabular}
+\end{table}
+
+
