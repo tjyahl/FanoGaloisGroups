@@ -99,18 +99,18 @@
 
 \item[$\bullet$] Schl\"{a}fli determined these lines lie in a ``remarkable configuration'' 
 
-\item[$\bullet$] A \blue{Fano problem} is the problem of enumerating linear spaces of a fixed dimension on a variety.
+\item[$\bullet$] A \blue{Fano problem} is the problem of enumerating $r$-planes on a variety.
 \end{enumerate}
 \end{minipage}
 %
-\begin{minipage}{.02\textwidth}
+\begin{minipage}{.01\textwidth}
 ~
 \end{minipage}
 %
-\begin{minipage}{.4\textwidth}
+\begin{minipage}{.43\textwidth}
 %27 lines picture
 \begin{center}
-\includegraphics[scale=.32]{figures/27lines.pdf}
+\includegraphics[scale=.3]{figures/27lines.pdf}
 \end{center}
 \end{minipage}
 
@@ -126,27 +126,29 @@
 \begin{frame}
 \frametitle{Fano problems}
 \begin{enumerate}
-\item[$\bullet$] For fixed degrees $d_\bullet = (d_1,\dotsc,d_s)$ choose homogeneous polynomials in $n+1$ variables, $F = (f_1,\dotsc,f_s)$.
+\item[$\bullet$] Let $X_F\subseteq\mathbb{P}^n$ be the complete intersection defined by homogeneous polynomials $F=(f_1,\dotsc,f_s)$ with $\deg f_i = d_i$.
 
-\item[$\bullet$] Enumerate the $r$-planes that lie on the zero set $X_F = V(F)\subseteq\mathbb{P}^n$.
+\item[$\bullet$] Enumerate the $r$-planes $\ell\in\mathbb{G}(r,\mathbb{P}^n)$ that lie on $X_F$. 
 \end{enumerate}
 
-When there are finitely many such $r$-planes for general polynomials $F = (f_1,\dotsc,f_s)$, this is a \blue{Fano problem} determined by $(r,n,d_\bullet)$.
+This is a \blue{Fano problem} of type $(r,n,d_\bullet)$ when there are finitely many $r$-planes on $X_F$.
 
 \begin{enumerate}
 \pause
 
-\item[$\bullet$] The \blue{Fano scheme} $V_r(X_F)$ is the set of $r$-planes on $X_F$ as a subvariety of the Grassmanian $\mathbb{G}(r,\mathbb{P}^n)$.
+\item[$\bullet$] The \blue{Fano scheme} $V_r(X_F)$ is the subscheme of $\mathbb{G}(r,\mathbb{P}^n)$ of $r$-planes that lie on $X_F$.
 
 \pause
 
-\item[$\bullet$] The combinatorial data $(r,n,d_\bullet)$ determines a Fano problem when $n-s-2r\ge 0$ and
+\item[$\bullet$] [Debarre/Manivel] The combinatorial data $(r,n,d_\bullet)$ determines a Fano problem when $n-s-2r\ge 0$ and
 
-\vspace{-.8cm}
-
+\vspace{-.3cm}
+\hspace{-1.2cm}
+\begin{minipage}{.99\textwidth}
 \begin{align*}
 (r+1)(n-r) - \sum_{i=1}^s \left(\begin{smallmatrix}d_i + r\\r\end{smallmatrix}\right)=0.
 \end{align*}
+\end{minipage}
 \end{enumerate}
 
 \end{frame}
@@ -155,31 +157,38 @@ When there are finitely many such $r$-planes for general polynomials $F = (f_1,\
 %
 \begin{frame}
 \frametitle{Examples}
-Debarre and Manivel explicitly determined the number of solutions to the Fano problem determined by the data $(r,n,d_\bullet)$ by intersection theoretic means. Write this number as $\deg(r,n,d_\bullet)$.
+Debarre and Manivel determined the number of solutions to a general Fano problem of type $(r,n,d_\bullet)$. Write this number as $N(r,n,d_\bullet)$.
 
 We list all Fano problems with less than 1000 solutions below.
 
+\hspace{-.5cm}
+\begin{minipage}{.99\textwidth}
 \begin{table}[htb]
   \label{Small Fano}
   \def\arraystretch{1.1}
   \begin{tabular}{||c|c|c|c|c||}
     \hline
-    $r$ & $n$ & $d_\bullet$ & $\deg(r,n,d_\bullet)$ & Galois group\\
+    $r$ & $n$ & $d_\bullet$ & $N(r,n,d_\bullet)$\\
     \hline\hline
-    1 & 4 & $(2,2)$ & 16 & $D_5$\\
+    1 & 4 & $(2,2)$ & 16\\
     \hline
-    1 & 3 & $(3)$ & 27 & $E_6$\\
+    1 & 3 & $(3)$ & 27\\
     \hline
-    2 & 6 & $(2,2)$ & 64 & $D_7$\\
+    2 & 6 & $(2,2)$ & 64\\
     \hline
-    3 & 8 & $(2,2)$ & 256 & $D_9$\\
+    3 & 8 & $(2,2)$ & 256\\
     \hline
-    1 & 7 & $(2,2,2,2)$ & 512 & \new{$S_{512}$}\\
+    1 & 7 & $(2,2,2,2)$ & 512\\
     \hline
-    1 & 6 & $(2,2,3)$ & 720  & \new{$S_{720}$}\\
+    1 & 6 & $(2,2,3)$ & 720\\
     \hline
   \end{tabular}
 \end{table}
+\end{minipage}
+
+%\vspace{-.2cm}
+
+%The $r$-planes generally do not intersect if $d_\bullet\ne(3),(2,2)$.
 \end{frame}
 
 
@@ -192,7 +201,7 @@ We list all Fano problems with less than 1000 solutions below.
 \frametitle{Incidence correspondence}
 Write $\mathbb{C}^{(r,n,d_\bullet)}$ for the parameter space of homogeneous forms $F = (f_1,\dotsc,f_s)$ in $n+1$ variables of degrees $d_\bullet = (d_1,\dotsc,d_s)$.
 
-Fix $(r,n,d_\bullet)$. There is an incidence correspondence
+There is an incidence correspondence
 
 \vspace{-.3cm}
 
@@ -210,7 +219,7 @@ Fix $(r,n,d_\bullet)$. There is an incidence correspondence
 \begin{enumerate}
 \item[$\bullet$] $\Gamma_{(r,n,d_\bullet)}$ is irreducible.
 
-\item[$\bullet$] $\deg \pi_{(r,n,d_\bullet)} = \deg(r,n,d_\bullet)$ and the fiber over $F\in\mathbb{C}^{(r,n,d_\bullet)}$ is the set of $r$-planes $V_r(X_F)$.
+\item[$\bullet$] $\deg \pi_{(r,n,d_\bullet)} = N(r,n,d_\bullet)$.
 
 \item[$\bullet$] $\pi_{(r,n,d_\bullet)}$ restricts to a covering space over a Zariski open set.
 \end{enumerate}
@@ -221,33 +230,37 @@ Fix $(r,n,d_\bullet)$. There is an incidence correspondence
 \begin{frame}
 \frametitle{Galois groups of Fano problems}
 \hspace{-.65cm}
-\begin{minipage}{.73\textwidth}
+\begin{minipage}{.71\textwidth}
 \begin{enumerate}
 \item[$\bullet$] The \blue{Galois group}, $\mathcal{G}_{(r,n,d_\bullet)}$, of the Fano problem determined by $(r,n,d_\bullet)$ is the monodromy group of $\pi_{(r,n,d_\bullet)}$.
 
 \vspace{.1cm}
 
-\item[$\bullet$] Jordan/Harris: $\mathcal{G}_{(1,3,(3))} = E_6$
+\item[$\bullet$] [Jordan],[Harris] $\mathcal{G}_{(1,3,(3))} = E_6$.
 
 \vspace{.1cm}
 
-\item[$\bullet$] Harris: $\mathcal{G}_{(1,n,(2n-3))}$ is symmetric for $n\ge 4$
+\item[$\bullet$] [Harris] For $n\ge 4$, $\mathcal{G}_{(1,n,(2n-3))}$ is symmetric.
 
 \vspace{.1cm}
 
-\item[$\bullet$] Hashimoto/Kadets: $\mathcal{G}_{(r,2r+2,(2,2))} = D_{2r+3}$
+\item[$\bullet$] [Hashimoto/Kadets] $\mathcal{G}_{(r,2r+2,(2,2))} = D_{2r+3}$.
 
 \vspace{.1cm}
 
-\item[$\bullet$] Hashimoto/Kadets: If $d_\bullet\ne(3),(2,2)$ then $\mathcal{G}_{(r,n,d_\bullet)}$ contains the alternating group
+\item[$\bullet$] [Hashimoto/Kadets] If $d_\bullet\ne(3),(2,2)$ then $\mathcal{G}_{(r,n,d_\bullet)}$ contains the alternating group.
 \end{enumerate}
 \end{minipage}
 %
 \begin{minipage}{.25\textwidth}
 \begin{center}
-\includegraphics[scale=.5]{figures/monodromy.pdf}
+\includegraphics[scale=.48]{figures/monodromy.pdf}
 \end{center}
 \end{minipage}
+
+\vspace{.4cm}
+
+\textbf{\underline{Goal:}} Use computational methods to \underline{prove} remaining Galois groups contain a simple transposition.
 
 \end{frame}
 
@@ -298,72 +311,112 @@ Fix $(r,n,d_\bullet)$. There is an incidence correspondence
 %Harris' method
 %%Harris' method of proof
 \begin{frame}
-\frametitle{Harris' method of proof}
-%\textbf{\underline{Goal:}} use numerics \underline{prove} remaining Galois groups contain a simple transposition and are therefore symmetric. 
+\frametitle{Harris' method of proof and our plan}
+%\begin{lemma}[Harris]
+
+%\vspace{.05cm}
+
+%Let $\pi:Y\mapsto Z$ be a smooth map of degree $k$ between irreducible varieties. If there exists a point $p\in Z$ such that the fiber $\pi^{-1}(p)$ consists of exactly $k-2$ simple points and one double point then the monodromy group of $\pi$ contains a simple transposition.
+%\end{lemma}
 
 %\vspace{.2cm}
 
-\begin{lemma}[Harris]
-
-\vspace{.05cm}
-
-Let $\pi:Y\mapsto Z$ be a smooth map of degree $k$ between irreducible varieties. If there exists a point $p\in Z$ such that the fiber $\pi^{-1}(p)$ consists of exactly $k-2$ simple points and one double point then the monodromy group of $\pi$ contains a simple transposition.
-\end{lemma}
-
-\vspace{.2cm}
-
-We have a smooth map $\pi_{(r,n,d_\bullet)}:\Gamma_{(r,n,d_\bullet)}\to\mathbb{C}^{(r,n,d_\bullet)}$ of degree $\deg(r,n,d_\bullet)$ between irreducible varieties.
+\begin{minipage}{.65\textwidth}
+Find $F\in\mathbb{C}^{(r,n,d_\bullet)}$ such that $V_r(X_F)$ is one point of multiplicity 2 and $N(r,n,d_\bullet)-2$ smooth points.
 \begin{enumerate}
-\item[$\bullet$] Heuristically choose $F\in\mathbb{C}^{(r,n,d_\bullet)}$ so that $V_r(X_F)$ consists of $\deg(r,n,d_\bullet)-2$ simple points and one double point.
+\item[$\bullet$] Heuristically choose $F\in\mathbb{C}^{(r,n,d_\bullet)}$.
 
-\item[$\bullet$] Solve a system $\overline{F}$ describing $V_r(X_F)$ in local coordinates.
+\item[$\bullet$] Show $V_r(X_F)$ contains a point of multiplicity 2 by exact computation.
 
-\item[$\bullet$] Verify claims with exact computation and numerical certification.
+\item[$\bullet$] Show there are $N(r,n,d_\bullet)-2$ smooth points by numerical certification.
 \end{enumerate}
+\end{minipage}
+%
+\begin{minipage}{.01\textwidth}
+~
+\end{minipage}
+%
+\begin{minipage}{.3\textwidth}
+\begin{center}
+\includegraphics[scale=.5]{figures/Harris.pdf}
+\end{center}
+\end{minipage}
+
+%We have a smooth map $\pi_{(r,n,d_\bullet)}:\Gamma_{(r,n,d_\bullet)}\to\mathbb{C}^{(r,n,d_\bullet)}$ of degree $\deg(r,n,d_\bullet)$ between irreducible varieties.
+
 \end{frame}
 
 
 
+%\begin{frame}
+%\frametitle{Choose $F\in\mathbb{C}^{(r,n,d_\bullet)}$, write $\overline{F}$, and solve}
+%Choose local coordinates on $\mathbb{G}(r,\mathbb{P}^n)$ and for $\omega\in\mathbb{G}(r,\mathbb{P}^n)$ use local coordinates $\omega^\ast$ to parameterize $\omega$.
+%\vspace{-.1cm}
+%\begin{enumerate}
+%\item[$\bullet$] Write $\overline{F}$ as the system sending local coordinates of $\omega\in\mathbb{G}(r,\mathbb{P}^n)$ to the coefficients of $F|_\omega$ in local coordinates on $\omega$.
 
+%\item[$\bullet$] Choose $\ell\in\mathbb{G}(r,\mathbb{P}^n)$ and a nonzero vector $v\in\mathbb{C}^{(r+1)(n-r)}$.
 
-\begin{frame}
-\frametitle{Choose $F\in\mathbb{C}^{(r,n,d_\bullet)}$, write $\overline{F}$, and solve}
-Choose local coordinates on $\mathbb{G}(r,\mathbb{P}^n)$ and for $\omega\in\mathbb{G}(r,\mathbb{P}^n)$ use local coordinates $\omega^\ast$ to parameterize $\omega$.
-\vspace{-.1cm}
-\begin{enumerate}
-\item[$\bullet$] Write $\overline{F}$ as the system sending local coordinates of $\omega\in\mathbb{G}(r,\mathbb{P}^n)$ to the coefficients of $F|_\omega$ in local coordinates on $\omega$.
+%\item[$\bullet$] Randomly select $F\in\mathbb{C}^{(r,n,d_\bullet)}$ satisfying the linear conditions $\overline{F}(\ell^\ast)=0$ and $D\overline{F}(\ell^\ast)v=0$.
 
-\item[$\bullet$] Choose $\ell\in\mathbb{G}(r,\mathbb{P}^n)$ and a nonzero vector $v\in\mathbb{C}^{(r+1)(n-r)}$.
+%\item[$\bullet$] Use your favorite solver to enumerate the solutions of $\overline{F}$.
+%\end{enumerate}
 
-\item[$\bullet$] Randomly select $F\in\mathbb{C}^{(r,n,d_\bullet)}$ satisfying the linear conditions $\overline{F}(\ell^\ast)=0$ and $D\overline{F}(\ell^\ast)v=0$.
-
-\item[$\bullet$] Use your favorite solver to enumerate the solutions of $\overline{F}$.
-\end{enumerate}
-
-\textbf{\underline{Note:}} If $\ell$ and $v$ have rational coordinates, $F$ can be chosen to have rational coordinates as well.
-\end{frame}
+%\textbf{\underline{Note:}} If $\ell$ and $v$ have rational coordinates, $F$ can be chosen to have rational coordinates as well.
+%\end{frame}
 
 
 
 %IMAGE??
+%\begin{frame}
+%\frametitle{Simple double roots and numerical certification}
+%A \blue{simple double root} of a system $G$ is a root $x$ satisfying $\ker DG(x) = \langle v \rangle$ and $D^2G(x)(v,v)\not\in \text{im}\,DG(x)$. 
+%\vspace{-.2cm}
+%\begin{enumerate}
+%\item[$\bullet$] By work of Shub, simple double roots are isolated solutions of multiplicity 2.
+
+%\item[$\bullet$] If $\ell$, $v$, and $F$ (and $\overline{F}$) have rational coordinates, these conditions can be checked exactly.
+%\end{enumerate}
+
+%There are 2 methods of isolating the remaining solutions.
+%\vspace{-.2cm}
+%\begin{enumerate}
+%\item[$\bullet$] $\alpha$-theory 
+
+%\item[$\bullet$] Interval arithmetic
+%\end{enumerate}
+%\end{frame}
+
+
+
 \begin{frame}
-\frametitle{Simple double roots and numerical certification}
-A \blue{simple double root} of a system $G$ is a root $x$ satisfying $\ker DG(x) = \langle v \rangle$ and $D^2G(x)(v,v)\not\in \text{im}\,DG(x)$. 
-\vspace{-.2cm}
+\frametitle{Choosing $F\in\mathbb{C}^{(r,n,d_\bullet)}$ and verifying conditions}
+Choose $F$ by presecribing a subscheme of $V_r(X_F)$.
 \begin{enumerate}
-\item[$\bullet$] By work of Shub, simple double roots are isolated solutions of multiplicity 2.
+\item[$\bullet$] Fix an $r$-plane $\ell\in\mathbb{G}(r,\mathbb{P}^n)$ and a tangent vector $v\in T_\ell\mathbb{G}(r,\mathbb{P}^n)$. 
 
-\item[$\bullet$] If $\ell$, $v$, and $F$ have rational coordinates, these conditions can be checked exactly.
+\item[$\bullet$] Choose general $F$ so that $\ell\in V_r(X_F)$ and $v\in T_\ell V_r(X_F)$.
 \end{enumerate}
 
-There are 2 methods of isolating the remaining solutions.
-\vspace{-.2cm}
+When $\ell$ and $v$ are chosen exactly, $F$ can be chosen exactly as well.
 \begin{enumerate}
-\item[$\bullet$] $\alpha$-theory 
+\item[$\bullet$] [Shub] simple double points are isolated.
 
-\item[$\bullet$] Interval arithmetic
+\item[$\bullet$] The remaining $N(r,n,d_\bullet)-2$ solutions can be enumerated and isolated by certification.
+\begin{enumerate}
+\item[\scalebox{.7}{$\blacksquare$}] $\alpha$-theory
+
+\item[\scalebox{.7}{$\blacksquare$}] interval arithmetic
 \end{enumerate}
+\end{enumerate}
+
+
+
+
 \end{frame}
+
+
+
 
 
 
@@ -373,7 +426,7 @@ Given a system $G:\mathbb{C}^m\to\mathbb{C}^m$ and $x\in\mathbb{C}^m$, there are
 
 \begin{thm}[Smale et al.]
 \vspace{-.1cm}
-If $G$ is a system and $x$ is such that
+If $G$ and $x$ are such that
 \vspace{-.2cm}
 \begin{align*}
 \alpha(G,x) < \frac{13-3\sqrt{17}}{4},
@@ -384,9 +437,9 @@ then $x$ converges (quadratically) under Newton's method to a solution $y$ of $G
 \end{thm}
 
 \begin{enumerate}
-\item[$\bullet$] When $G$ and $x$ are given by exact coordinates, this provides an exact isolating ball for the solution $y$. 
+\item[$\bullet$] When $G$ and $x$ are given by exact coordinates, this provides means of isolating the solution $y$. 
 
-\item[$\bullet$] \texttt{alphaCertified} will check the inequality above and certify balls isolating solutions are disjoint, with exact arithmetic. 
+\item[$\bullet$] \texttt{alphaCertified} will check the inequality above and certify the isolating balls are disjoint. 
 \end{enumerate}
 \end{frame}
 
@@ -397,9 +450,9 @@ then $x$ converges (quadratically) under Newton's method to a solution $y$ of $G
 \frametitle{Interval Arithmetic}
 Given a system $G:\mathbb{C}^m\to\mathbb{C}^m$, $x\in\mathbb{C}^m$, and $Y\in\text{GL}_m(\mathbb{C})$, the Krawczyk operator $K_{x,Y}$ on the space of complex intervals generalizes the Newton operator.
 
-\begin{thm}
+\begin{thm}[Krawczyk]
 \vspace{-.1cm}
-If $G$ is a system, and $x$ is a point, and $I$ is a complex interval such that 
+If $G$, $x$, and $I$ are such that 
 \vspace{-.3cm}
 \begin{align*}
 K_{x,Y}(I)\subseteq I,
@@ -419,22 +472,18 @@ then $I$ contains a zero of $G$.
 
 
 
-
 \begin{frame}
-\frametitle{Results and timings}
-\begin{thm}[Y.] 
-\vspace{.01cm}
-The Fano problems with $d_\bullet\ne (3),(2,2)$ and less than 40,000 solutions have full symmetric Galois group.
-\end{thm}
+\frametitle{Timings}
+\textbf{Timing:} The reported timings for verifying the simple double point and certifying the remaining solutions is given below. (\texttt{alphaCertified},\texttt{HomotopyContinuation.jl})
 \vspace{-.1cm}
-\textbf{Timing:} (\texttt{NAG4M2},\texttt{alphaCertified},\texttt{HomotopyContinuation.jl})
-\vspace{-.2cm}
+\hspace{-.2cm}
+\begin{minipage}{.99\textwidth}
 \begin{table}[htb]
   \label{Small Fano}
-  \def\arraystretch{.98}
+  \def\arraystretch{.97}
   \begin{tabular}{||c|c|c|c|c|c||}
     \hline
-    $r$ & $n$ & $d_\bullet$ & $\deg(r,n,d_\bullet)$ & $\texttt{M2}$ (h) & $\texttt{julia}$ (s)\\
+    $r$ & $n$ & $d_\bullet$ & $\deg(r,n,d_\bullet)$ & $\texttt{alCer}$ (h) & $\texttt{HomCo}$ (s)\\
     \hline\hline
     1 & 7 & $(2,2,2,2)$ & 512 & 2.66 & .61\\
     \hline
@@ -456,37 +505,58 @@ The Fano problems with $d_\bullet\ne (3),(2,2)$ and less than 40,000 solutions h
     \hline
   \end{tabular}
 \end{table}
+\end{minipage}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Results}
+\begin{thm}[Y.]
+\vspace{.01cm}
+The Fano problems with $d_\bullet\ne (3),(2,2)$ and less than 40,000 solutions have full symmetric Galois group.
+\end{thm}
+
+\begin{enumerate}
+\item[$\bullet$] This shows the 9 shown Fano problems have full symmetric Galois group, which was previously unknown.
+\end{enumerate}
+
+Data for these systems and code verifying the data is available at 
+\vspace{-.25cm}
+\begin{center}
+\texttt{github.com/tjyahl/FanoGaloisGroups}
+\end{center}
 \end{frame}
 
 
 
 %
 \begin{frame}
-\frametitle{Moving forward}
-Data for these systems and code verifying the data is available at 
-\vspace{-.25cm}
-\begin{center}
-\texttt{github.com/tjyahl/FanoGaloisGroups}
-\end{center}
-\vspace{-.25cm}
+\frametitle{Moving forward \& Bottlenecks}
+
 There is more to do!
 \begin{enumerate}
-\item[$\bullet$] Generate systems with a single simple double root for larger Fano problems (in progress).
+\item[$\bullet$] (In progress) Generate and verify data for larger Fano problems. Current bottleneck is memory!
 
 \item[$\bullet$] Turn this into a proof for ALL Fano problems with $d_\bullet\ne(3),(2,2)$.
 
-\item[$\bullet$] Explore using numerical certification for proving more about Galois groups.
+\item[$\bullet$] Explore using numerical certification to prove more about Galois groups.
 \end{enumerate}
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[allowframebreaks]
 \frametitle{References}
+\vspace{-.3cm}
 \begin{center}
 \textbf{\underline{Thank you all for your time!}}
 \end{center}
+\vspace{-.3cm}
+\bibliographystyle{abbrv}
+\bibliography{MEGA_Presentation}
+\cite{HCJL,DM,Harris,HK,alphaCertified,Jordan}
 \end{frame}
-
 \end{document}
 
 
