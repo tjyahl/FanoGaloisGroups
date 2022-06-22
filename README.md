@@ -18,7 +18,7 @@ For Fano problems with <50,000 solutions and as yet undetermined Galois group, c
 
 The repository is split into several folders:
 
-1) The folder 'MEGA_Abstract' contains an article describing finite Fano problems, their Galois groups, and the computational methods used in other folders.
+1) The folder 'Writing' contains several documents describing the mathematics, computations, and results of the contents of the repository.
 2) The folder 'Software' contains softwares necessary for running computations from other folders. The contents are as follows:
    - an executable version of the software 'alphaCertified'.
    - a M2 package 'alphaCertified' for transcribing systems and solutions to alphaCertified readable files.
