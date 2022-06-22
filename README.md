@@ -12,7 +12,9 @@ Repository created and maintained by:
 > 
 > Texas A&M University
 
-The problem of enumerating linear spaces of a fixed dimension on a variety is known as a Fano problem. Those Fano problems with finitely many solutions have an associated Galois group that acts on the set of solutions. For a class of Fano problems, Hashimoto and Kadets determined the Galois group completely and showed that for all other Fano problems the Galois group contains the alternating group on its solutions. For Fano problems of moderate size with as yet undetermined Galois group, computational methods has been used to prove that the Galois group is the full symmetric group. This repository contains code written in Macaulay2 (M2) and julia as well as data for replicating the computations.
+The problem of enumerating linear spaces of a fixed dimension on a variety is known as a Fano problem. Those Fano problems with finitely many solutions have an associated Galois group that acts on the set of solutions. For a class of Fano problems, Hashimoto and Kadets determined the Galois group completely and showed that for all other Fano problems the Galois group contains the alternating group on its solutions. 
+
+For Fano problems with <50,000 solutions and as yet undetermined Galois group, computational methods has been used to prove that the Galois group is the full symmetric group. This repository contains code written in Macaulay2 (M2) and julia as well as data for replicating the computations.
 
 The repository is split into several folders:
 
