@@ -12,7 +12,7 @@ Repository created and maintained by:
 > 
 > Texas A&M University
 
-The problem of enumerating linear spaces of a fixed dimension on a variety is known as a Fano problem. Those Fano problems with finitely many solutions have an associated Galois group that acts on the set of solutions. For a class of Fano problems, Hashimoto and Kadets determined the Galois group completely and showed that for all other Fano problems the Galois group contains the alternating group on its solutions. For Fano problems of moderate size with as yet undetermined Galois group, computational methods has been used to prove that the Galois group is the full symmetric group. For larger examples numerical methods provide evidence the Galois group is the full symmetric group. This repository contains code written in Macaulay2 (M2) and data for replicating these computations.
+The problem of enumerating linear spaces of a fixed dimension on a variety is known as a Fano problem. Those Fano problems with finitely many solutions have an associated Galois group that acts on the set of solutions. For a class of Fano problems, Hashimoto and Kadets determined the Galois group completely and showed that for all other Fano problems the Galois group contains the alternating group on its solutions. For Fano problems of moderate size with as yet undetermined Galois group, computational methods has been used to prove that the Galois group is the full symmetric group. This repository contains code written in Macaulay2 (M2) and julia as well as data for replicating the computations.
 
 The repository is split into several folders:
 
@@ -20,14 +20,13 @@ The repository is split into several folders:
 2) The folder 'Software' contains softwares necessary for running computations from other folders. The contents are as follows:
    - an executable version of the software 'alphaCertified'.
    - a M2 package 'alphaCertified' for transcribing systems and solutions to alphaCertified readable files.
-   - a M2 package 'FanoProblems' for numerically tracking solutions of a parameterized system of equations around a designated path in the parameter space.
+   - a M2 package 'FanoProblems' for computations involving Fano problems and their equations (in suitable coordinates).
+   - a julia file 'Fano.jl' for computations involving Fano problems and their equations (in suitable coordinates).
 3) The folder 'Certification' contains several files:
    - several folders containing data for different finite Fano problems.
    - a M2 file 'systemGeneration.m2' for generating contents of the data contained in the mentioned folders.
    - a M2 file 'certifySolutions.m2' for running contents of the data folders through alphaCertified.
-4) The folder 'Monodromy' contains several files:
-   - several folders containing data for different finite Fano problems.
-   - a M2 file 'discriminant_loops.m2' for generating contents of the data contained in previous folders.
-   - a M2 file 'trackLoops.m2' for running contents of the data folders through alphaCertified.
-5) The folder 'StartSystems' contains data used for more quickly computing contents in previous folders.
+   - a julia file 'systemGeneration.jl' for generating contents of the data contained in the mentioned folders.
+   - a julia file 'certifySolutions.jl' for running contents of the data folders through alphaCertified.
+4) The folder 'StartSystems' contains data used for more quickly computing contents in previous folders.
 

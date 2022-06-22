@@ -8,7 +8,7 @@
 \definecolor{bur}{rgb}{0.6, 0.0, 0.0}
 
 \title{Computing Galois groups of Fano problems}
-\author{Thomas Yahl\\  \texttt{thomasjyahl@tamu.edu}\\ \vspace{-.1cm} \\ \texttt{arXiv:}\\ \vspace{-.1cm} \\ Texas A\&M University}
+\author{Thomas Yahl\\  \texttt{thomasjyahl@tamu.edu}\\ \vspace{-.1cm} \\ \vspace{-.1cm} \\ Texas A\&M University}
 \date{June 2022}
 
 
@@ -82,7 +82,7 @@
 \begin{frame}
 \titlepage
 
-\texttt{arXiv:}
+%\texttt{arXiv:}
 \end{frame}
 
 
@@ -146,7 +146,7 @@ This is a \blue{Fano problem} of type $(r,n,d_\bullet)$ when there are finitely 
 \hspace{-1.2cm}
 \begin{minipage}{.99\textwidth}
 \begin{align*}
-(r+1)(n-r) - \sum_{i=1}^s \left(\begin{smallmatrix}d_i + r\\r\end{smallmatrix}\right)=0.
+(r+1)(n-r) - \sum_{i=1}^s \begin{pmatrix}d_i + r\\r\end{pmatrix}=0.
 \end{align*}
 \end{minipage}
 \end{enumerate}
@@ -217,8 +217,6 @@ There is an incidence correspondence
 \vspace{-.45cm}
 
 \begin{enumerate}
-\item[$\bullet$] $\Gamma_{(r,n,d_\bullet)}$ is irreducible.
-
 \item[$\bullet$] $\deg \pi_{(r,n,d_\bullet)} = N(r,n,d_\bullet)$.
 
 \item[$\bullet$] $\pi_{(r,n,d_\bullet)}$ restricts to a covering space over a Zariski open set.
@@ -258,9 +256,9 @@ There is an incidence correspondence
 \end{center}
 \end{minipage}
 
-\vspace{.4cm}
+%\vspace{.4cm}
 
-\textbf{\underline{Goal:}} Use computational methods to \underline{prove} remaining Galois groups contain a simple transposition.
+
 
 \end{frame}
 
@@ -319,7 +317,9 @@ There is an incidence correspondence
 %Let $\pi:Y\mapsto Z$ be a smooth map of degree $k$ between irreducible varieties. If there exists a point $p\in Z$ such that the fiber $\pi^{-1}(p)$ consists of exactly $k-2$ simple points and one double point then the monodromy group of $\pi$ contains a simple transposition.
 %\end{lemma}
 
-%\vspace{.2cm}
+\textbf{\underline{Goal:}} Use computational methods to \underline{prove} remaining Galois groups contain a simple transposition.
+
+\vspace{.2cm}
 
 \begin{minipage}{.65\textwidth}
 Find $F\in\mathbb{C}^{(r,n,d_\bullet)}$ such that $V_r(X_F)$ is one point of multiplicity 2 and $N(r,n,d_\bullet)-2$ smooth points.
@@ -437,7 +437,7 @@ then $x$ converges (quadratically) under Newton's method to a solution $y$ of $G
 \end{thm}
 
 \begin{enumerate}
-\item[$\bullet$] When $G$ and $x$ are given by exact coordinates, this provides means of isolating the solution $y$. 
+\item[$\bullet$] Need $G$ and $x$ given by rational coordinates to certify a proof.
 
 \item[$\bullet$] \texttt{alphaCertified} will check the inequality above and certify the isolating balls are disjoint. 
 \end{enumerate}
@@ -448,7 +448,7 @@ then $x$ converges (quadratically) under Newton's method to a solution $y$ of $G
 
 \begin{frame}
 \frametitle{Interval Arithmetic}
-Given a system $G:\mathbb{C}^m\to\mathbb{C}^m$, $x\in\mathbb{C}^m$, and $Y\in\text{GL}_m(\mathbb{C})$, the Krawczyk operator $K_{x,Y}$ on the space of complex intervals generalizes the Newton operator.
+Given a system $G:\mathbb{C}^m\to\mathbb{C}^m$, $x\in\mathbb{C}^m$, and $Y\in\text{GL}_m(\mathbb{C})$, write the Krawczyk operator $K_{x,Y}$.
 
 \begin{thm}[Krawczyk]
 \vspace{-.1cm}
@@ -474,7 +474,7 @@ then $I$ contains a zero of $G$.
 
 \begin{frame}
 \frametitle{Timings}
-\textbf{Timing:} The reported timings for verifying the simple double point and certifying the remaining solutions is given below. (\texttt{alphaCertified},\texttt{HomotopyContinuation.jl})
+The reported timings for verifying the simple double point and certifying the remaining solutions is given below. (\texttt{alphaCertified},\texttt{HomotopyContinuation.jl})
 \vspace{-.1cm}
 \hspace{-.2cm}
 \begin{minipage}{.99\textwidth}
@@ -483,7 +483,7 @@ then $I$ contains a zero of $G$.
   \def\arraystretch{.97}
   \begin{tabular}{||c|c|c|c|c|c||}
     \hline
-    $r$ & $n$ & $d_\bullet$ & $\deg(r,n,d_\bullet)$ & $\texttt{alCer}$ (h) & $\texttt{HomCo}$ (s)\\
+    $r$ & $n$ & $d_\bullet$ & $N(r,n,d_\bullet)$ & $\texttt{alCer}$ (h) & $\texttt{HomCo}$ (s)\\
     \hline\hline
     1 & 7 & $(2,2,2,2)$ & 512 & 2.66 & .61\\
     \hline
@@ -503,6 +503,8 @@ then $I$ contains a zero of $G$.
     \hline
     1 & 8 & (2,2,3,3) & 37584 & - & 38.23\\
     \hline
+    1 & 8 & (2,2,2,4) & 47104 & - & 111.88\\
+    \hline
   \end{tabular}
 \end{table}
 \end{minipage}
@@ -515,11 +517,11 @@ then $I$ contains a zero of $G$.
 \frametitle{Results}
 \begin{thm}[Y.]
 \vspace{.01cm}
-The Fano problems with $d_\bullet\ne (3),(2,2)$ and less than 40,000 solutions have full symmetric Galois group.
+The Fano problems with $d_\bullet\ne (3),(2,2)$ and less than 50,000 solutions have full symmetric Galois group.
 \end{thm}
 
 \begin{enumerate}
-\item[$\bullet$] This shows the 9 shown Fano problems have full symmetric Galois group, which was previously unknown.
+\item[$\bullet$] This shows the 10 shown Fano problems have full symmetric Galois group, which was previously unknown.
 \end{enumerate}
 
 Data for these systems and code verifying the data is available at 
