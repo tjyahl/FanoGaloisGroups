@@ -96,8 +96,10 @@ for FanoData in FanoProblems
     #Certify remaining solutions
     print("Degree of Fano problem: "*string(FanoDegree)*"\n")
     @time C = certify(F̄,nonsingSolns)
+    @time distinctCertifiedSolns = ndistinct_complex_certified(C)
     certifiedSolns = filter(c->c.certified,C.certificates)
     print("Number of certified solutions: "*string(length(certifiedSolns))*"\n")
+    print("Number of distinct certified solutions: "*string(distinctCertifiedSolns)*"\n")
     if all(c->!(singSoln in c.I),certifiedSolns)
         print("singSoln is not contained in any certification interval\n\n")
     else

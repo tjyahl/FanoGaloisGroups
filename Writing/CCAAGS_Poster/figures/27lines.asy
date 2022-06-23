@@ -4,12 +4,12 @@ import smoothcontour3;
 
 size(500,600,keepAspect=true);
 
-material cubicsurf = opacity(.85) + gray;
-pen bluepen = heavyblue + 1.75;
+material cubicsurf = opacity(.75) + lightcyan;
+pen bluepen = rgb(.7,0,0) + 2.5;
 
-currentprojection=orthographic(34,5,-14);
+currentprojection=orthographic(20,5,-14);
 //currentprojection=orthographic(-5,8,-20);
-currentlight=(-1,15,22);
+currentlight=(-1,2,4);
 
 //has 27 real lines
 real cubic(real x, real y, real z) {
@@ -108,7 +108,19 @@ draw(line27,bluepen);
 
 
 currentprojection=
-  orthographic(camera=(34.000004405770014,5.0000002824365,-14.000001205022508),
+  orthographic(camera=(22.000004405770014,5.0000002824365,-2.000001205022508),
                up=(0.006688083,0.0009835416,0.01659375),
                target=(7.105427e-15,0,-5.329071e-15),
+               zoom=1);
+
+currentprojection=
+  orthographic(camera=(21.999999731490004,4.999999938974999,-2.000001168238506),
+               up=(0.001762995,-0.0001940057,0.01890793),
+               target=(3.552714e-15,-8.881784e-16,-5.77316e-15),
+               zoom=1);
+
+currentprojection=
+  orthographic(camera=(21.999996964539,4.999999310122499,-2.000000916697356),
+               up=(0.001762996,-0.0001940055,0.01890793),
+               target=(3.552714e-15,-8.881784e-16,-5.77316e-15),
                zoom=1);

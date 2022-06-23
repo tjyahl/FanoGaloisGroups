@@ -2,8 +2,8 @@ import graph3;
 
 size(200,300,keepAspect=false);
 
-material m = opacity(.65) + gray;
-pen bluepen = heavyblue + 2.5;
+material m = opacity(.65) + lightcyan;
+pen bluepen = rgb(.7,0,0) + 2.5;
 pen mappen = black+2;
 
 currentprojection=orthographic(10,-12,16);
@@ -24,17 +24,17 @@ path3 lift2=graph(lift,2pi/3-pi/3,4pi/3-pi/3+.05);
 path3 lift3=graph(lift,4pi/3-pi/3,2pi-pi/3);
 path3 proj=graph(d,.7,1.8);
 
-dot(point(u1,0),bluepen + 7);
-dot(point(lift1,0),bluepen+7);
-dot(point(lift3,100),bluepen+7);
+dot(point(u1,0),bluepen + 8);
+dot(point(lift1,0),bluepen+8);
+dot(point(lift3,100),bluepen+8);
 
 draw(s,meshpen=black,surfacepen=m,render(merge=true));
 draw(t,meshpen=black,surfacepen=m,render(merge=true));
-draw(u1,bluepen,arrow=Arrow3(size=13bp));
-draw(u2,bluepen,arrow=Arrow3(size=13bp));
+draw(u1,bluepen,arrow=Arrow3(size=18bp));
+draw(u2,bluepen,arrow=Arrow3(size=18bp));
 draw(u3,bluepen);
-draw(lift1,bluepen,arrow=Arrow3(size=13bp));
-draw(lift2,bluepen,arrow=Arrow3(size=13bp));
+draw(lift1,bluepen,arrow=Arrow3(size=18bp));
+draw(lift2,bluepen,arrow=Arrow3(size=18bp));
 draw(lift3,bluepen);
 draw(proj,mappen,Arrow3(size=8bp));
 
@@ -49,4 +49,16 @@ currentprojection=
   orthographic(camera=(9.9999981363315,-11.9999974096695,15.999995956345497),
                up=(-0.002622996,0.003118567,0.01958647),
                target=(0,-1.776357e-15,-1.776357e-15),
+               zoom=1);
+
+currentprojection=
+  orthographic(camera=(9.999997672002,-11.999996498566,15.999995921284993),
+               up=(-0.002626379,0.003107598,0.01961853),
+               target=(0,-1.776357e-15,-3.552714e-15),
+               zoom=1);
+
+currentprojection=
+  orthographic(camera=(9.999996102051,-11.999994261015003,15.999992348019994),
+               up=(-0.002631596,0.003106576,0.01961794),
+               target=(0,-3.552714e-15,-7.105427e-15),
                zoom=1);

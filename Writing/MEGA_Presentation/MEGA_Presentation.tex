@@ -24,6 +24,7 @@
 \newcommand{\blue}[1]{{\color{black!15!blue}\underline{#1}}}
 \newcommand{\orange}[1]{{\color{black!15!cinnamon}\underline{#1}}}
 
+%\usefonttheme{serif}
 
 %%%%%%%%%%%%%%%%%
 %%Rough Outline%%
@@ -433,7 +434,7 @@ If $G$ and $x$ are such that
 \end{align*}
 \vspace{-.85cm}
 
-then $x$ converges (quadratically) under Newton's method to a solution $y$ of $G$. Further, $||x-y||\le 2\beta(G,x)$.
+then $x$ converges (quadratically) under Newton's method to a solution $\xi$ of $G$. Further, $||x-\xi||\le 2\beta(G,x)$.
 \end{thm}
 
 \begin{enumerate}
@@ -448,11 +449,11 @@ then $x$ converges (quadratically) under Newton's method to a solution $y$ of $G
 
 \begin{frame}
 \frametitle{Interval Arithmetic}
-Given a system $G:\mathbb{C}^m\to\mathbb{C}^m$, $x\in\mathbb{C}^m$, and $Y\in\text{GL}_m(\mathbb{C})$, write the Krawczyk operator $K_{x,Y}$.
+Given a system $G:\mathbb{C}^m\to\mathbb{C}^m$, $x\in\mathbb{C}^m$, and $Y\in\text{GL}_m(\mathbb{C})$, the Krawczyk operator $K_{x,Y}$ acts on complex intervals.
 
 \begin{thm}[Krawczyk]
 \vspace{-.1cm}
-If $G$, $x$, and $I$ are such that 
+If $G$, $x$, $Y$, and $I$ are such that 
 \vspace{-.3cm}
 \begin{align*}
 K_{x,Y}(I)\subseteq I,
@@ -469,6 +470,28 @@ then $I$ contains a zero of $G$.
 \end{enumerate}
 \end{frame}
 
+
+
+\begin{frame}
+\frametitle{Results}
+\begin{thm}[Y.]
+\vspace{.01cm}
+The Fano problems with $d_\bullet\ne (3),(2,2)$ and less than 50,000 solutions have full symmetric Galois group.
+\end{thm}
+\begin{proof}
+For those Fano problems, an $F$ has been found such that $V_r(X_F)$ is a simple double point and $N(r,n,d_\bullet)-2$ smooth points.
+\end{proof}
+
+\begin{enumerate}
+\item[$\bullet$] This shows 10 Fano problems have full symmetric Galois group, which were previously unknown.
+\end{enumerate}
+
+Data for these systems and code verifying the data is available at 
+\vspace{-.25cm}
+\begin{center}
+\texttt{github.com/tjyahl/FanoGaloisGroups}
+\end{center}
+\end{frame}
 
 
 
@@ -511,25 +534,6 @@ The reported timings for verifying the simple double point and certifying the re
 \end{frame}
 
 
-
-
-\begin{frame}
-\frametitle{Results}
-\begin{thm}[Y.]
-\vspace{.01cm}
-The Fano problems with $d_\bullet\ne (3),(2,2)$ and less than 50,000 solutions have full symmetric Galois group.
-\end{thm}
-
-\begin{enumerate}
-\item[$\bullet$] This shows the 10 shown Fano problems have full symmetric Galois group, which was previously unknown.
-\end{enumerate}
-
-Data for these systems and code verifying the data is available at 
-\vspace{-.25cm}
-\begin{center}
-\texttt{github.com/tjyahl/FanoGaloisGroups}
-\end{center}
-\end{frame}
 
 
 

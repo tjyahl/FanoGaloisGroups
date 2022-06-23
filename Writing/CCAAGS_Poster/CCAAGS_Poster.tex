@@ -7,15 +7,17 @@
 \documentclass[final]{beamer}
 \usepackage[size=a1,scale=1.2]{beamerposter}
 \usetheme{Copenhagen}
+%\usetheme{Madrid}
 \usepackage[font=Large]{caption}
+\usepackage[OT1]{fontenc}
 \usepackage{etoolbox}
 \usepackage{amsmath,amssymb,amsthm,tikz,framed,xcolor}
 
 \newtheoremstyle{thrm}  % Name
-{10cm}       % Space above 
-{10cm}       % Space below
+{10in}       % Space above 
+{10in}       % Space below
 {\Large}      % Body font
-{}          % Indent amount 
+{2cm}          % Indent amount 
 {\Large}  % Theorem head font
 {.}         % Punctuation after theorem head
 {.5em}      % Space after theorem head
@@ -24,69 +26,101 @@
 \theoremstyle{thrm}
 \newtheorem{thm}{Theorem}
 
+%used to frame things to determine size
+%\fcolorbox{blue}{black!10!blue!10}{}
 
-\newcommand{\new}[1]{{\color{black!15!blue}#1}}
-\newcommand{\blue}[1]{{\color{black!15!blue}\underline{#1}}}
-\newcommand{\orange}[1]{{\color{black!15!cinnamon}\underline{#1}}}
+%Shamelessly taken from online
+\definecolor{aggiemaroon}{RGB}{80,0,0} % Official RGB code for aggie maroon
+
+\setbeamercolor{palette primary}{bg = aggiemaroon,fg = white}
+\setbeamercolor{palette secondary}{bg = aggiemaroon,fg = white}
+\setbeamercolor{palette tertiary}{bg = aggiemaroon,fg = white}
+\setbeamercolor{palette quaternary}{bg = aggiemaroon,fg = white}
+\setbeamercolor{block title}{bg = aggiemaroon, fg = white}
+\setbeamercolor{enumerate item}{bg = aggiemaroon, fg = aggiemaroon}
+\setbeamercolor{caption name}{bg = aggiemaroon, fg = aggiemaroon}
+\setbeamertemplate{footline}{\hfill\Large Supported by Simons Foundation grant number 636314.~~~~~~\raisebox{-1cm}{~}}
+
+\newcommand{\new}[1]{{\color{black!15!aggiemaroon}#1}}
+\newcommand{\blue}[1]{{\color{black!15!aggiemaroon}\underline{#1}}}
 \newcommand{\headft}[1]{
 \begin{center}
-\underline{\quad{\LARGE \color{black!50!blue!50}{#1}}\quad}
+{\color{aggiemaroon}\textbf{\quad\LARGE{#1}\quad}}
 \end{center}
 }
 
+\renewcommand{\baselinestretch}{1.06} 
+
 \newcommand{\tallminipage}{\begin{minipage}{.025\textwidth}~\vspace{0pt}~\end{minipage}}
+
+\beamertemplatenavigationsymbolsempty
+\usefonttheme{serif}
+
 
 \begin{document}
 \begin{frame}
 \Large
+\vspace{-2cm}
 \begin{minipage}{1\textwidth}
-\fcolorbox{blue}{black!10!blue!10}{
-\begin{minipage}[t]{.2\textwidth}
+
+\begin{minipage}[t]{.3\textwidth}
 Thomas Yahl\\
 \texttt{thomasjyahl@tamu.edu}\\
 Texas A\&M University
 \vspace{1cm}
 \end{minipage}
 %
-\begin{minipage}{.6\textwidth}
-\vspace{2.8cm}
+\begin{minipage}{.4\textwidth}
+\vspace{2cm}
 \begin{center}
-\LARGE\new{Computing Galois groups of Fano problems}
+{\color{aggiemaroon}\huge\underline{\textbf{Computing Galois groups of Fano problems}}}
 \end{center}
 \end{minipage}
 %
-\begin{minipage}{.18\textwidth}
+\begin{minipage}{.04\textwidth}
 ~
 \end{minipage}
-}
+%
+\begin{minipage}{.25\textwidth}
+\vspace{2cm}
+\begin{center}
+\begin{figure}
+  \includegraphics[angle=270,scale=.3]{figures/tamulogo.png}
+\end{figure}
+\end{center}
+\end{minipage}
 \end{minipage}
 
 
-\vspace{1.5cm}
+\vspace{.6cm}
 
 \tallminipage
 %%%%%COLUMN 1%%%%%
 \begin{minipage}[t]{.3\textwidth}
 \headft{Fano Problems}
-A Fano problem is the problem of enumerating linear spaces of a fixed dimension on a complete intersection.
+Enumerating $r$-planes on a complete intersection.
 \begin{enumerate}
-\item[$\bullet$] Let $X_F\subseteq\mathbb{P}^n$ be the complete intersection defined by homogeneous polynomials $F=(f_1,\dotsc,f_s)$ with $\deg f_i = d_i$. Write $d_\bullet = (d_1,\dotsc,d_s)$.
+\item[$\bullet$] Fix $d_\bullet = (d_1,\dotsc,d_s)$.
+\item[$\bullet$] $X_F\subseteq\mathbb{P}^n$ is defined by homogeneous polynomials $F=(f_1,\dotsc,f_s)$ with $\deg f_i = d_i$
 
 \item[$\bullet$] The \blue{Fano scheme} $V_r(X_F)$ is the subscheme of $\mathbb{G}(r,\mathbb{P}^n)$ of $r$-planes that lie on $X_F$.
 
-\item[$\bullet$] When $V_r(X_F)$ is finite, this is a \blue{Fano problem} of type $(r,n,d_\bullet)$.
+\item[$\bullet$] This is a \blue{Fano problem} of type $(r,n,d_\bullet)$ when $V_r(X_F)$ is finite.
 \end{enumerate}
+
+\vspace{-.3cm}
 
 %27 lines picture
 \begin{center}
 \begin{figure}[27lines]
-\includegraphics[scale=.55]{figures/27lines.pdf}
+\includegraphics[scale=.7]{figures/27lines.pdf}
 \caption{27 lines on a cubic surface}
 \end{figure}
 \end{center}
 
+\vspace{-.5cm}
 
-\begin{thm}[Debarre/Manivel]
+\begin{thm}[\raisebox{-.1cm}{\,}Debarre,Manivel\raisebox{.9cm}{\,}]
 \vspace{.2cm}
 The combinatorial data $(r,n,d_\bullet)$ determines a Fano problem when $n-s-2r\ge 0$ and
 \begin{align*}
@@ -94,6 +128,8 @@ The combinatorial data $(r,n,d_\bullet)$ determines a Fano problem when $n-s-2r\
 \end{align*}
 \vspace{.1cm}
 \end{thm}
+
+\vspace{-.2cm}
 %\begin{enumerate}
 %\item[$\bullet$] [Debarre/Manivel] The combinatorial data $(r,n,d_\bullet)$ determines a Fano problem when $n-s-2r\ge 0$ and
 %\vspace{-.5cm}
@@ -107,9 +143,9 @@ The combinatorial data $(r,n,d_\bullet)$ determines a Fano problem when $n-s-2r\
 
 %\vspace{.6cm}
 
-%Debarre and Manivel determined the number of solutions to a general Fano problem of type $(r,n,d_\bullet)$, $N(r,n,d_\bullet)$.
+Denote the number of solutions to a general Fano problem of type $(r,n,d_\bullet)$ by $N(r,n,d_\bullet)$.
 
-\vspace{.8cm}
+%\vspace{.3cm}
 
 \begin{figure}
 \begin{minipage}{.99\textwidth}
@@ -135,7 +171,10 @@ The combinatorial data $(r,n,d_\bullet)$ determines a Fano problem when $n-s-2r\
   \end{tabular}
 \end{table}
 \end{minipage}
-\caption{All Fano problems with $\le 1000$ solutions}
+
+\vspace{.2cm}
+
+All Fano problems with $\le 1000$ solutions
 \end{figure}
 \end{minipage}
 %
@@ -143,7 +182,7 @@ The combinatorial data $(r,n,d_\bullet)$ determines a Fano problem when $n-s-2r\
 %%%%%COLUMN 2%%%%%
 \begin{minipage}[t]{.3\textwidth}
 \headft{Galois groups of Fano problems}
-Write $\mathbb{C}^{(r,n,d_\bullet)}$ for the parameter space of homogeneous forms $F = (f_1,\dotsc,f_s)$ in $n+1$ variables of degrees $d_\bullet = (d_1,\dotsc,d_s)$. Consider the incidence correspondence.
+Write $\mathbb{C}^{(r,n,d_\bullet)}$ for the parameter space of systems $F$. There is an incidence correspondence:
 
 \vspace{-1cm}
 
@@ -151,8 +190,8 @@ Write $\mathbb{C}^{(r,n,d_\bullet)}$ for the parameter space of homogeneous form
 \begin{tikzpicture}
 \node at (0,0) {$\Gamma_{(r,n,d_\bullet)} = \{(F,\ell)\in \mathbb{C}^{(r,n,d_\bullet)}\times\mathbb{G}(r,\mathbb{P}^n):\ell\in V_r(X_F)\}$};
 \node at (-9.3,-4.75) {$\mathbb{C}^{(r,n,d_\bullet)}$};
-\draw[very thick,->] (-9.3,-1.3)--(-9.3,-4.05) node[left] at (-9.4,-2.875) {$\pi_{(r,n,d_\bullet)}$};
-\draw[very thick,->] (-9,-1.3)--(1.5,-4) node at (1.5,-4.75) {$\mathbb{G}(r,\mathbb{P}^n)$};
+\draw[line width=.06cm,->] (-9.3,-1.3)--(-9.3,-3.95) node[left] at (-9.4,-2.875) {$\pi_{(r,n,d_\bullet)}$};
+\draw[line width=.06cm,->] (-9,-1.3)--(2.4,-3.8) node at (3.5,-4.75) {$\mathbb{G}(r,\mathbb{P}^n)$};
 \end{tikzpicture}
 \end{center}
 
@@ -164,14 +203,31 @@ Write $\mathbb{C}^{(r,n,d_\bullet)}$ for the parameter space of homogeneous form
 %\item[$\bullet$] $\pi_{(r,n,d_\bullet)}$ restricts to a covering space over a Zariski open set.
 %\end{enumerate}
 
-\vspace{1cm}
+\vspace{-.1cm}
+
+%\begin{minipage}{.65\textwidth}
+%The \blue{Galois group}, $\mathcal{G}_{(r,n,d_\bullet)}$, of the Fano problem of type $(r,n,d_\bullet)$ is the monodromy group of $\pi_{(r,n,d_\bullet)}$.
+%\begin{enumerate}
+%\item[$\bullet$] $\mathcal{G}_{(r,n,d_\bullet)}$ is transitive
+
+%\item[$\bullet$] $\mathcal{G}_{(r,n,d_\bullet)}$ is a Galois group in the algebraic sense.
+%\end{enumerate}
+%\end{minipage}
+%
+%\begin{minipage}{.02\textwidth}
+%~
+%\end{minipage}
+%
+%\begin{minipage}{.3\textwidth}
+The \blue{Galois group}, $\mathcal{G}_{(r,n,d_\bullet)}$, of the Fano problem of type $(r,n,d_\bullet)$ is the monodromy group of $\pi_{(r,n,d_\bullet)}$.
 
 \begin{minipage}{.65\textwidth}
-The \blue{Galois group}, $\mathcal{G}_{(r,n,d_\bullet)}$, of the Fano problem determined by $(r,n,d_\bullet)$ is the monodromy group of $\pi_{(r,n,d_\bullet)}$.
 \begin{enumerate}
-\item[$\bullet$] $\mathcal{G}_{(r,n,d_\bullet)}$ is transitive
-
 \item[$\bullet$] $\mathcal{G}_{(r,n,d_\bullet)}$ is a Galois group in the algebraic sense.
+
+\item[$\bullet$] $\mathcal{G}_{(r,n,d_\bullet)}$ is transitive.
+
+\item[$\bullet$] If $d_\bullet\ne (3),(2,2)$, then $\mathcal{G}_{(r,n,d_\bullet)}$ is 2-transitive.
 \end{enumerate}
 \end{minipage}
 %
@@ -182,14 +238,14 @@ The \blue{Galois group}, $\mathcal{G}_{(r,n,d_\bullet)}$, of the Fano problem de
 \begin{minipage}{.3\textwidth}
 \begin{center}
 \begin{figure}
-\includegraphics[scale=.95]{figures/monodromy.pdf}
+\includegraphics[scale=1]{figures/monodromy.pdf}
 \end{figure}
 \end{center}
 \end{minipage}
 
 \vspace{.4cm}
 
-\begin{thm}[Jordan,Harris,Hashimoto,Kadets]
+\begin{thm}[\raisebox{-.1cm}{\,}Jordan,Harris,Hashimoto,Kadets\raisebox{.9cm}{\,}]
 \vspace{.2cm}
 The following is known:
 \begin{enumerate}
@@ -235,26 +291,32 @@ The following is known:
 %\vspace{1cm}
 
 \headft{Finding a simple transposition}
-\begin{minipage}{.65\textwidth}
-Find $F\in\mathbb{C}^{(r,n,d_\bullet)}$ such that $V_r(X_F)$ is one point of multiplicity 2 and $N(r,n,d_\bullet)-2$ smooth points.
+%\begin{minipage}{.65\textwidth}
+\blue{Goal:} Find $F\in\mathbb{C}^{(r,n,d_\bullet)}$ such that $V_r(X_F)$ is one point of multiplicity 2 and $N(r,n,d_\bullet)-2$ smooth points.
+
+\vspace{.1cm}
+
+\blue{Plan:}
 \begin{enumerate}
-\item[$\bullet$] Heuristically choose $F\in\mathbb{C}^{(r,n,d_\bullet)}$.
+\item[$1)$] Choose general $F\in\mathbb{C}^{(r,n,d_\bullet)}$ such that $V_r(X_F)$ contains a multiple point.
 
-\item[$\bullet$] Show $V_r(X_F)$ contains a point of multiplicity 2 by exact computation.
+\item[$2)$] Point of multiplicity 2 exists by exact computation.
 
-\item[$\bullet$] Show there are $N(r,n,d_\bullet)-2$ smooth points by numerical certification.
+\item[$3)$] Remaining points smooth by numerical certification.
+
+\item[$4)$] Local monodromy is generated by a transposition.
 \end{enumerate}
-\end{minipage}
+%\end{minipage}
 %
-\begin{minipage}{.02\textwidth}
-~
-\end{minipage}
+%\begin{minipage}{.02\textwidth}
+%~
+%\end{minipage}
 %
-\begin{minipage}{.3\textwidth}
-\begin{center}
-\includegraphics[scale=1]{figures/Harris.pdf}
-\end{center}
-\end{minipage}
+%\begin{minipage}{.3\textwidth}
+%\begin{center}
+%\includegraphics[scale=1]{figures/Harris.pdf}
+%\end{center}
+%\end{minipage}
 
 \vspace{1cm}
 
@@ -264,28 +326,41 @@ Find $F\in\mathbb{C}^{(r,n,d_\bullet)}$ such that $V_r(X_F)$ is one point of mul
 \tallminipage
 %%%%%COLUMN 3%%%%%
 \begin{minipage}[t]{.3\textwidth}
+\vspace{.15cm} 
 Choose $F$ by presecribing a subscheme of $V_r(X_F)$.
 \begin{enumerate}
-\item[$\bullet$] Fix an $r$-plane $\ell\in\mathbb{G}(r,\mathbb{P}^n)$ and a tangent vector $v\in T_\ell\mathbb{G}(r,\mathbb{P}^n)$. 
+\item[$\bullet$] Fix $\ell\in\mathbb{G}(r,\mathbb{P}^n)$ and tangent vector $v\in T_\ell\mathbb{G}(r,\mathbb{P}^n)$. 
 
-\item[$\bullet$] Choose general $F$ so that $\ell\in V_r(X_F)$ and $v\in T_\ell V_r(X_F)$.
+\item[$\bullet$] Choose general $F$ satisfying $\ell\in V_r(X_F)$ and $v\in T_\ell V_r(X_F)$.
 \end{enumerate}
 
-When $\ell$ and $v$ are chosen exactly, $F$ can be chosen exactly as well.
-\begin{enumerate}
-\item[$\bullet$] [Shub] simple double points are isolated.
+When $\ell$ and $v$ are chosen exactly, $F$ can be chosen exactly.
 
-\item[$\bullet$] The remaining $N(r,n,d_\bullet)-2$ solutions can be enumerated and isolated by certification.
 \begin{enumerate}
-\item[\scalebox{.8}{$\blacksquare$}] \Large $\alpha$-theory \normalsize
+\item[$\bullet$] Simple double points are isolated.
 
-\item[\scalebox{.7}{$\blacksquare$}] \Large interval arithmetic
+\item[$\bullet$] Remaining solutions enumerated and isolated.
+
+\vspace{.5cm}
+
+\begin{enumerate}
+\item[\scalebox{.8}{\color{aggiemaroon}$\blacksquare$}] \Large $\alpha$-theory \normalsize
+
+\item[\scalebox{.7}{\color{aggiemaroon}$\blacksquare$}] \Large interval arithmetic
 \end{enumerate}
 \end{enumerate}
 
 \vspace{.1cm}
 \headft{Results and timings}
-The reported timings for verifying the simple double point and certifying the remaining solutions is given below. (\texttt{alphaCertified},\texttt{HomotopyContinuation.jl})
+\begin{thm}[\raisebox{-.1cm}{\,}Y.\raisebox{.9cm}{\,}]
+\vspace{.2cm}
+\Large The Fano problems with $d_\bullet\ne (3),(2,2)$ and less than 50,000 solutions have full symmetric Galois group.
+\vspace{.1cm}
+\end{thm}
+
+\vspace{-.05cm}
+
+Timings for verifying the simple double point and certifying remaining solutions is given below. (\texttt{alphaCertified},\texttt{HomotopyContinuation.jl})
 
 \vspace{-.8cm}
 
@@ -322,15 +397,9 @@ The reported timings for verifying the simple double point and certifying the re
 \end{table}
 \end{minipage}
 
-\vspace{.1cm}
-
-\begin{thm}[Y.]
 \vspace{.2cm}
-\Large The Fano problems with $d_\bullet\ne (3),(2,2)$ and less than 50,000 solutions have full symmetric Galois group.
-\vspace{.1cm}
-\end{thm}
 
-Data for these systems and code verifying the data is available at 
+Data and code available at:
 \vspace{-.25cm}
 \begin{center}
 \texttt{github.com/tjyahl/FanoGaloisGroups}
