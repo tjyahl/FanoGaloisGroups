@@ -164,7 +164,7 @@ end
 
 
 
-function saveData(r::Int,n::Int,degs::Vector{Int},systemCoeffs::Vector{Complex{Rational{BigInt}}},singSoln::Vector{Complex{Rational{BigInt}}},targetVec::Vector{Complex{Rational{BigInt}}},nonsingSolns::Vector{Vector{ComplexF64}})
+function saveData(r::Int,n::Int,degs::Vector{Int},systemCoeffs::Vector{Complex{Rational{BigInt}}},singSoln::Vector{Complex{Rational{BigInt}}},tangVec::Vector{Complex{Rational{BigInt}}},nonsingSolns::Vector{Vector{ComplexF64}})
     #create output files
     FanoFolder = string(r)*"_"*string(n)*"_"*foldl((a,b)->a*"_"*b,map(string,degs))*"/"
     sysCoeffsFile = open(FanoFolder*"juliaData/systemCoefficients.txt","w")
