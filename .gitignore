@@ -1,5 +1,7 @@
 # file extensions to ignore
 *~
+*.tex
+*.bib
 *.aux
 *.log
 *.bbl
