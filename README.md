@@ -8,9 +8,9 @@ Repository created and maintained by:
 
 > Thomas Yahl
 > 
-> Thomasjyahl@tamu.edu
+> Tyahl@wisc.edu
 > 
-> Texas A&M University
+> University of Wisconsin - Madison
 
 The problem of enumerating linear spaces of a fixed dimension on a variety is known as a Fano problem. Those Fano problems with finitely many solutions have an associated Galois group that acts on the set of solutions. For a class of Fano problems, Hashimoto and Kadets determined the Galois group completely and showed that for all other Fano problems the Galois group contains the alternating group on its solutions. 
 
