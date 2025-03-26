@@ -29,6 +29,6 @@ The repository is split into several folders:
    - a M2 file 'systemGeneration.m2' for generating contents of the data contained in the mentioned folders.
    - a M2 file 'certifySolutions.m2' for running contents of the data folders through alphaCertified.
    - a julia file 'systemGeneration.jl' for generating contents of the data contained in the mentioned folders.
-   - a julia file 'certifySolutions.jl' for running contents of the data folders through alphaCertified.
+   - a julia file 'certifySolutions.jl' for certifying the contents of the data folders via interval arithmetic in HomotopyContinuation.jl.
 4) The folder 'StartSystems' contains data used for more quickly computing contents in previous folders.
 
